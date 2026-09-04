@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neurology MCQ — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F5F0;--panel:#FFF;--ink:#202B2F;--ink-soft:#68777B;--border:#DFDBCF;--accent:#1F6F64;--accent-dark:#185A51;--accent-soft:#DCEAE7;--serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box} body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans)}
+.header{max-width:1100px;margin:auto;padding:28px 24px 0}.headerRow{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{font-family:var(--serif);font-size:28px;font-weight:600}.profile{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:13px}
+.profileName{color:var(--ink);font-weight:600}.genderIcon{font-size:20px;color:var(--accent);display:flex}.subscribe{border:1px solid var(--accent);background:var(--panel);color:var(--accent);padding:7px 13px;border-radius:4px;cursor:pointer;font:500 13px var(--sans)}.subscribe:hover{background:var(--accent-soft)}.subscribe.subscribed{background:var(--accent-soft);color:var(--accent-dark);border-color:var(--accent)}.logout{border:1px solid var(--border);background:none;color:var(--ink-soft);padding:7px 13px;border-radius:4px;cursor:pointer}.logout:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.wave{height:22px;margin-top:14px;border-bottom:1px solid rgba(31,111,100,.28)}
+main{max-width:1000px;margin:0 auto;padding:65px 24px 80px;text-align:center}h1{font-family:var(--serif);font-size:34px;margin:0 0 8px}.welcome{color:var(--ink-soft);margin:0 0 45px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;text-align:left}.card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:28px 24px;min-height:190px;cursor:pointer;transition:.15s ease}.card:hover{border-color:var(--accent);box-shadow:0 5px 18px rgba(32,43,47,.06);transform:translateY(-2px)}.cardNumber{font-family:monospace;color:var(--accent);font-size:12px;margin-bottom:22px}.card h2{font-family:var(--serif);font-size:24px;margin:0 0 8px}.card p{color:var(--ink-soft);font-size:13px;line-height:1.6;margin:0}
+@media(max-width:720px){.headerRow{align-items:flex-start}.cards{grid-template-columns:1fr}main{padding-top:45px}.profile{flex-wrap:wrap;justify-content:flex-end}.brand{font-size:24px}}
+
+body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);height:34px;transform:translateX(-50%);pointer-events:none;opacity:.09;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 50' preserveAspectRatio='none'%3E%3Cpolyline points='0,25 300,25 340,25 350,10 362,40 374,25 405,25 430,25 442,18 450,32 458,25 900,25' fill='none' stroke='%231F6F64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}header,main{position:relative;z-index:1}.genderIcon svg,.gender svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="headerRow">
+    <div class="brand">Neurology MCQ</div>
+    <div class="profile">
+      <button class="subscribe" id="subscribeButton" type="button">Subscribe</button>
+      <span class="genderIcon" id="genderIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"></circle><path d="M5.5 21c.7-4.2 2.9-6.5 6.5-6.5s5.8 2.3 6.5 6.5"></path></svg></span>
+      <span class="profileName" id="profileName"></span>
+      <button class="logout" id="logoutButton">Logout</button>
+    </div>
+  </div>
+  <div class="wave" aria-hidden="true"></div>
+</header>
+<main>
+  <h1>Welcome back</h1>
+  <p class="welcome" id="welcomeText">Choose what you would like to do.</p>
+  <section class="cards" aria-label="Dashboard options">
+    <article class="card" data-page="question-bank.html">
+      <div class="cardNumber">01</div><h2>Question Bank</h2><p>Browse and study the neurology MCQ question bank.</p>
+    </article>
+    <article class="card" data-page="start-test.html">
+      <div class="cardNumber">02</div><h2>Start Test</h2><p>Select a topic and begin a new test.</p>
+    </article>
+    <article class="card" data-page="review-facts.html">
+      <div class="cardNumber">03</div><h2>Review Facts</h2><p>Review concise neurology facts and learning points.</p>
+    </article>
+    <article class="card" data-page="test-history.html">
+      <div class="cardNumber">04</div><h2>Test History</h2><p>View previous test sessions, scores, percentages and time taken.</p>
+    </article>
+  </section>
+</main>
+<script src="auth.js"></script>
+<script>
+const account = requireLogin();
+if (account) {
+  document.getElementById("profileName").textContent = account.fullName;
+  document.getElementById("genderIcon").innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"></circle><path d="M5.5 21c.7-4.2 2.9-6.5 6.5-6.5s5.8 2.3 6.5 6.5"></path></svg>';
+  document.getElementById("welcomeText").textContent = "Welcome back, " + account.fullName + ". Choose what you would like to do.";
+}
+document.getElementById("logoutButton").addEventListener("click", logout);
+const subscribeButton = document.getElementById("subscribeButton");
+const subscriptionKey = "neurologyMCQSubscription_" + account.userId;
+function updateSubscriptionButton() {
+  const subscribed = localStorage.getItem(subscriptionKey) === "subscribed";
+  subscribeButton.textContent = subscribed ? "Subscribed" : "Subscribe";
+  subscribeButton.classList.toggle("subscribed", subscribed);
+  subscribeButton.setAttribute("aria-pressed", subscribed ? "true" : "false");
+}
+subscribeButton.addEventListener("click", function() {
+  const subscribed = localStorage.getItem(subscriptionKey) === "subscribed";
+  localStorage.setItem(subscriptionKey, subscribed ? "unsubscribed" : "subscribed");
+  updateSubscriptionButton();
+});
+updateSubscriptionButton();
+document.querySelectorAll(".card").forEach(card => {
+  card.addEventListener("click", () => window.location.href = card.dataset.page);
+});
+</script>
+</body>
+</html>

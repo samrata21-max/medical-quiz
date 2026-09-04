@@ -1,0 +1,405 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+:root {
+    --bg: #F6F5F0;
+    --panel: #FFFFFF;
+    --ink: #202B2F;
+    --ink-soft: #5B6B70;
+    --border: #DFDBCF;
+    --accent: #1F6F64;
+    --accent-dark: #185A51;
+    --accent-soft: #DCEAE7;
+    --good: #5B8C5A;
+    --good-bg: #E8F0E4;
+    --bad: #B14A3A;
+    --bad-bg: #F7E7E2;
+    --flag: #C08A28;
+
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.registerPage {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 48px 20px 70px;
+}
+
+.registerCard {
+    width: min(600px, 100%);
+    text-align: center;
+}
+
+.brandName {
+    font-family: var(--serif);
+    font-size: 31px;
+    font-weight: 600;
+    letter-spacing: .2px;
+}
+
+.brandLine {
+    width: 170px;
+    height: 1px;
+    margin: 14px auto 32px;
+    background: var(--accent);
+    opacity: .45;
+}
+
+.registerCard h1 {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.subtitle {
+    margin: 6px 0 28px;
+    color: var(--ink-soft);
+    font-size: 14px;
+}
+
+#registerForm {
+    width: 100%;
+    text-align: left;
+}
+
+.field {
+    margin-bottom: 16px;
+}
+
+.field > label {
+    display: block;
+    margin: 0 0 7px;
+    color: var(--ink-soft);
+    font-size: 12px;
+}
+
+.inputWrap {
+    position: relative;
+    width: 100%;
+}
+
+.inputWrap input {
+    width: 100%;
+    height: 44px;
+    padding: 0 58px 0 40px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--panel);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.inputWrap input:focus,
+.mobileRow input:focus,
+.countryWrap select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.inputWrap input::placeholder,
+.mobileRow input::placeholder {
+    color: #9AA3A5;
+}
+
+.inputIcon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-soft);
+    font-size: 17px;
+    pointer-events: none;
+}
+
+.togglePassword {
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 3px 0;
+}
+
+.togglePassword:hover { color: var(--accent); }
+
+/* Gender and Resident/Student: equal, aligned, theme-coloured controls */
+.choiceGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.choiceButton {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--panel);
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+.choiceButton:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.choiceButton.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+    box-shadow: inset 0 0 0 1px rgba(31,111,100,.08);
+    font-weight: 600;
+}
+
+.choiceIcon {
+    font-size: 19px;
+    line-height: 1;
+    color: currentColor;
+}
+
+/* Country + mobile */
+.mobileRow {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 10px;
+    align-items: stretch;
+}
+
+.countryWrap select,
+.mobileRow input {
+    width: 100%;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: var(--panel);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    outline: none;
+}
+
+.countryWrap select {
+    padding: 0 30px 0 12px;
+    cursor: pointer;
+}
+
+.mobileRow input {
+    padding: 0 12px;
+}
+
+.fieldHint {
+    min-height: 17px;
+    margin-top: 5px;
+    color: var(--ink-soft);
+    font-size: 10px;
+}
+
+.fieldError {
+    min-height: 0;
+    margin-top: 2px;
+    color: var(--bad);
+    font-size: 11px;
+}
+
+/* Password */
+.passwordStrength {
+    margin: 7px 0 7px;
+}
+
+.strengthTrack {
+    width: 100%;
+    height: 5px;
+    overflow: hidden;
+    background: var(--border);
+    border-radius: 4px;
+}
+
+#strengthBar {
+    width: 0%;
+    height: 100%;
+    background: var(--bad);
+    transition: width .2s ease, background .2s ease;
+}
+
+#strengthText {
+    margin-top: 4px;
+    color: var(--ink-soft);
+    font-size: 10px;
+}
+
+.passwordRules {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px 20px;
+    margin: 0;
+    padding: 9px 11px;
+    border: 1px solid var(--accent-soft);
+    border-radius: 3px;
+    background: rgba(220,234,231,.38);
+    color: var(--bad);
+    font-size: 10px;
+}
+
+.passwordRules div.valid { color: var(--good); }
+
+.registerMessage {
+    min-height: 20px;
+    margin: 1px 0 5px;
+    color: var(--bad);
+    font-size: 12px;
+    text-align: center;
+}
+
+.createButton {
+    width: 100%;
+    height: 46px;
+    border: none;
+    border-radius: 3px;
+    background: var(--accent);
+    color: #FFFFFF;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease;
+}
+
+.createButton:hover { background: var(--accent-dark); }
+
+.loginPrompt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    color: var(--ink-soft);
+    font-size: 13px;
+}
+
+.loginPrompt button {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.loginPrompt button:hover { text-decoration: underline; }
+
+@media (max-width: 560px) {
+    .registerPage {
+        padding: 34px 18px 55px;
+    }
+
+    .registerCard {
+        width: min(440px, 100%);
+    }
+
+    .mobileRow {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 390px) {
+    .passwordRules {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Make selection states unmistakable and keep buttons fully clickable */
+.choiceButton {
+    position: relative;
+    z-index: 1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.choiceButton:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+.choiceButton.selected {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Clinical icon system + subtle EKG identity */
+.inputIcon svg,
+.choiceIcon svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.inputIcon svg { width: 18px; height: 18px; }
+.choiceIcon svg { width: 20px; height: 20px; }
+.choiceButton:focus-visible,
+.createButton:focus-visible,
+.togglePassword:focus-visible,
+.loginPrompt button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+.ekgMotif {
+    position: fixed;
+    left: 50%;
+    top: 18px;
+    width: min(900px, 86vw);
+    height: 42px;
+    transform: translateX(-50%);
+    opacity: .10;
+    pointer-events: none;
+    z-index: 0;
+}
+.ekgMotif svg { width: 100%; height: 100%; overflow: visible; }
+.ekgMotif polyline {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.registerCard { position: relative; z-index: 1; }
+@media (max-width: 650px) {
+    .ekgMotif { top: 10px; width: 94vw; opacity: .08; }
+}

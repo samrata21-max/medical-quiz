@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neurology MCQ — Create Account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+<main class="registerPage">
+        <div class="ekgMotif" aria-hidden="true"><svg viewBox="0 0 900 70" preserveAspectRatio="none"><polyline points="0,35 300,35 330,35 342,34 350,35 360,35 370,35 380,10 392,60 404,35 420,35 435,35 445,24 452,45 460,35 900,35"></polyline></svg></div>
+    <section class="registerCard" aria-label="Neurology MCQ registration">
+
+        <header class="brand">
+            <div class="brandName">Neurology MCQ</div>
+            <div class="brandLine"></div>
+        </header>
+
+        <h1>Create Account</h1>
+        <p class="subtitle">Create your Neurology MCQ account</p>
+
+        <form id="registerForm" novalidate>
+
+            <div class="field">
+                <label for="fullName">Full name</label>
+                <div class="inputWrap">
+                    <span class="inputIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"></circle><path d="M5.5 20c.7-4 2.9-6 6.5-6s5.8 2 6.5 6"></path></svg></span>
+                    <input type="text" id="fullName" placeholder="Enter your full name"
+                           autocomplete="name" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Gender</label>
+                <div id="genderSelection" class="choiceGrid two">
+                    <button type="button" class="choiceButton genderButton" id="maleButton" aria-pressed="false">
+                        <span class="choiceIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="15" r="5"></circle><path d="M13 11l6-6M15 5h4v4"></path></svg></span>
+                        <span>Male</span>
+                    </button>
+                    <button type="button" class="choiceButton genderButton" id="femaleButton" aria-pressed="false">
+                        <span class="choiceIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"></circle><path d="M12 13v7M9 17h6"></path></svg></span>
+                        <span>Female</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="email">Email address</label>
+                <div class="inputWrap">
+                    <span class="inputIcon" aria-hidden="true">✉</span>
+                    <input type="email" id="email" placeholder="Enter your email address"
+                           autocomplete="email" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="mobile">Mobile number</label>
+                <div class="mobileRow">
+                    <div class="countryWrap">
+                        <select id="countryCode" name="countryCode" aria-label="Country calling code">
+                            <option value="+91" data-country="IN" selected>🇮🇳 +91 India</option>
+                            <option value="+1" data-country="US">🇺🇸 +1 United States / Canada</option>
+                            <option value="+44" data-country="GB">🇬🇧 +44 United Kingdom</option>
+                            <option value="+61" data-country="AU">🇦🇺 +61 Australia</option>
+                            <option value="+971" data-country="AE">🇦🇪 +971 UAE</option>
+                            <option value="+65" data-country="SG">🇸🇬 +65 Singapore</option>
+                            <option value="+49" data-country="DE">🇩🇪 +49 Germany</option>
+                            <option value="+33" data-country="FR">🇫🇷 +33 France</option>
+                            <option value="+81" data-country="JP">🇯🇵 +81 Japan</option>
+                            <option value="+82" data-country="KR">🇰🇷 +82 South Korea</option>
+                        </select>
+                    </div>
+                    <input type="tel" id="mobile" name="mobile" inputmode="tel"
+                           autocomplete="tel-national" placeholder="Enter mobile number" required>
+                </div>
+                <div id="mobileHint" class="fieldHint">India: 10 digits, starting with 6–9.</div>
+                <div id="mobileError" class="fieldError"></div>
+            </div>
+
+            <div class="field">
+                <label for="newUserId">User ID</label>
+                <div class="inputWrap">
+                    <span class="inputIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"></circle><path d="M5.5 20c.7-4 2.9-6 6.5-6s5.8 2 6.5 6"></path></svg></span>
+                    <input type="text" id="newUserId" placeholder="Create a unique User ID"
+                           autocomplete="username" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>You are a</label>
+                <div id="statusSelection" class="choiceGrid two">
+                    <button type="button" class="choiceButton statusButton" id="residentButton">
+                        <span class="choiceIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="6.5" r="3"></circle><path d="M5 21c.7-4.4 3-6.8 7-6.8s6.3 2.4 7 6.8"></path></svg></span>
+                        <span>Resident</span>
+                    </button>
+                    <button type="button" class="choiceButton statusButton" id="studentButton">
+                        <span class="choiceIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5h16v13H4z"></path><path d="M8 3.5v4M16 3.5v4M7 11h10M7 15h6"></path></svg></span>
+                        <span>Student</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="newPassword">Password</label>
+                <div class="inputWrap">
+                    <span class="inputIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span>
+                    <input type="password" id="newPassword" placeholder="Create a strong password"
+                           autocomplete="new-password" required>
+                    <button type="button" class="togglePassword" data-target="newPassword">Show</button>
+                </div>
+
+                <div class="passwordStrength">
+                    <div class="strengthTrack"><div id="strengthBar"></div></div>
+                    <div id="strengthText">Use a strong password</div>
+                </div>
+
+                <div class="passwordRules" aria-label="Password requirements">
+                    <div id="ruleLength">✓ At least 12 characters</div>
+                    <div id="ruleUpper">✓ One uppercase letter</div>
+                    <div id="ruleLower">✓ One lowercase letter</div>
+                    <div id="ruleNumber">✓ One number</div>
+                    <div id="ruleSpecial">✓ One special character</div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="confirmPassword">Confirm password</label>
+                <div class="inputWrap">
+                    <span class="inputIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password"
+                           autocomplete="new-password" required>
+                    <button type="button" class="togglePassword" data-target="confirmPassword">Show</button>
+                </div>
+            </div>
+
+            <p id="registerMessage" class="registerMessage" role="alert"></p>
+
+            <button type="submit" class="createButton">Create Account</button>
+        </form>
+
+        <div class="loginPrompt">
+            <span>Already have an account?</span>
+            <button type="button" id="signInButton">Sign in</button>
+        </div>
+
+    </section>
+</main>
+<script src="auth.js"></script>
+<script src="register.js"></script>
+</body>
+</html>

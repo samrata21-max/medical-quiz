@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neurology MCQ — Sign in</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <main class="loginPage">
+        <div class="ekgMotif" aria-hidden="true"><svg viewBox="0 0 900 70" preserveAspectRatio="none"><polyline points="0,35 300,35 330,35 342,34 350,35 360,35 370,35 380,10 392,60 404,35 420,35 435,35 445,24 452,45 460,35 900,35"></polyline></svg></div>
+
+        <section class="loginCard" aria-label="Neurology MCQ sign in">
+
+            <div class="brand">
+                <div class="brandName">Neurology MCQ</div>
+                <div class="brandLine"></div>
+            </div>
+
+            <h1>Sign in</h1>
+            <p class="subtitle">Welcome back</p>
+
+            <form id="loginForm" novalidate>
+
+                <label for="userId">User ID</label>
+
+                <div class="inputWrap">
+                    <span class="inputIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2"></circle><path d="M5.5 20c.7-4 2.9-6 6.5-6s5.8 2 6.5 6"></path></svg></span>
+                    <input
+                        type="text"
+                        id="userId"
+                        name="userId"
+                        placeholder="Enter User ID"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+
+                <label for="password">Password</label>
+
+                <div class="inputWrap">
+                    <span class="inputIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8 10h8M8 14h6"></path></svg></span>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <button
+                        type="button"
+                        id="togglePassword"
+                        class="togglePassword"
+                        aria-label="Show password"
+                    >Show</button>
+                </div>
+
+
+                <p id="loginMessage" class="loginMessage" role="alert"></p>
+
+                <button type="submit" class="signInButton">
+                    Sign in
+                </button>
+
+            </form>
+
+
+            <div class="registerPrompt">
+                <span>New user?</span>
+                <button type="button" id="registerButton">
+                    Register
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="auth.js"></script>
+<script src="login.js"></script>
+
+</body>
+</html>

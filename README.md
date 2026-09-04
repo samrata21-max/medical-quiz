@@ -1,2 +1,0 @@
-# medical-quiz
-medical quiz
