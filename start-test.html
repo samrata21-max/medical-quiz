@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neurology MCQ — Start Test</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F6F5F0;--panel:#FFF;--ink:#202B2F;--soft:#5B6B70;--border:#DFDBCF;--accent:#1F6F64;--accent-soft:#DCEAE7;--disabled:#F8F7F3;--serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",monospace}
@@ -13,25 +14,79 @@ header{max-width:1100px;margin:auto;padding:28px 24px 0}.head{display:flex;justi
 main{max-width:680px;margin:0 auto;padding:16px 24px 34px}.intro{text-align:center}.intro h1{font:600 29px var(--serif);margin:0 0 5px}.intro p{color:var(--soft);margin:0 0 18px}.panel{background:var(--panel);border:1px solid var(--border);padding:22px;border-radius:6px}.field{margin-bottom:19px}.field:last-child{margin-bottom:0}label{display:block;font-family:var(--mono);font-size:12px;color:var(--soft);margin-bottom:9px}.select{width:100%;height:42px;border:1px solid var(--border);background:#fff;color:var(--ink);font:14px var(--sans);padding:0 12px;border-radius:4px}.select:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}.available{font-size:12px;color:var(--soft);margin-top:8px}.difficultyGrid,.numberGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.choiceButton{height:42px;border:1px solid var(--border);background:#fff;color:var(--ink);border-radius:4px;font:500 14px var(--sans);cursor:pointer}.choiceButton:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}.choiceButton.selected{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600;box-shadow:inset 0 0 0 1px var(--accent)}.choiceButton:disabled{opacity:.38;cursor:not-allowed;background:var(--disabled)}.start{width:100%;height:44px;border:1px solid var(--accent);background:var(--accent);color:white;border-radius:4px;font:600 14px var(--sans);cursor:pointer;margin-top:18px}.start:hover{background:#185A51}.note{text-align:center;font-size:12px;color:var(--soft);margin-top:10px}.error{min-height:18px;text-align:center;color:#B14A3A;font-size:12px;margin-top:10px}.summary{border-top:1px solid var(--border);margin-top:18px;padding-top:14px;display:flex;justify-content:space-between;gap:20px;font-size:12px;color:var(--soft)}.summary strong{color:var(--ink);font-weight:500}
 body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);height:34px;transform:translateX(-50%);pointer-events:none;opacity:.09;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 50' preserveAspectRatio='none'%3E%3Cpolyline points='0,25 300,25 340,25 350,10 362,40 374,25 405,25 430,25 442,18 450,32 458,25 900,25' fill='none' stroke='%231F6F64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}header,main{position:relative;z-index:1}
 @media(max-width:520px){.head{align-items:flex-start}.brand{font-size:24px}.difficultyGrid,.numberGrid{grid-template-columns:repeat(2,1fr)}main{padding-top:42px}.panel{padding:22px}.summary{display:block}.summary div+div{margin-top:8px}.profile{flex-wrap:wrap;justify-content:flex-end}}
-</style></head>
+</style>
+</head>
 <body>
 <header><div class="head"><div class="brand">Neurology MCQ</div><div class="profile"><button class="dashboardNav" id="dashboardButton" type="button">Dashboard</button><span class="gender" id="genderIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"></circle><path d="M5.5 21c.7-4.2 2.9-6.5 6.5-6.5s5.8 2.3 6.5 6.5"></path></svg></span><strong id="profileName"></strong><button class="logout" id="logoutButton" type="button">Logout</button></div></div><div class="wave"></div></header>
-<main><section class="intro"><h1>Start Test</h1><p>Choose a topic, difficulty and number of questions for your test.</p></section>
+<main>
+<section class="intro"><h1>Start Test</h1><p>Choose a topic, difficulty and number of questions for your test.</p></section>
 <section class="panel">
-<div class="field"><label for="topicSelect">SELECT TOPIC</label><select class="select" id="topicSelect"></select><div class="available" id="availableText"></div></div>
-<div class="field"><label>SELECT DIFFICULTY LEVEL</label><div class="difficultyGrid" id="difficultyGrid"></div><div class="available" id="difficultyNote"></div></div>
-<div class="field"><label>NUMBER OF QUESTIONS</label><div class="numberGrid" id="numberGrid"></div></div>
-<div class="summary"><div>Topic: <strong id="summaryTopic">All topics</strong></div><div>Difficulty: <strong id="summaryDifficulty">All levels</strong></div><div>Questions: <strong id="summaryCount">—</strong></div></div>
-<div class="error" id="errorMessage"></div><button class="start" id="startButton" type="button">Start Test</button><div class="note">Questions will be selected randomly from the chosen topic and difficulty.</div>
-</section></main>
-<script src="auth.js"></script><script src="questions.js"></script><script>
-const account=requireLogin();if(account)document.getElementById('profileName').textContent=account.fullName;
-const topicSelect=document.getElementById('topicSelect'),difficultyGrid=document.getElementById('difficultyGrid'),numberGrid=document.getElementById('numberGrid'),availableText=document.getElementById('availableText'),difficultyNote=document.getElementById('difficultyNote'),summaryTopic=document.getElementById('summaryTopic'),summaryDifficulty=document.getElementById('summaryDifficulty'),summaryCount=document.getElementById('summaryCount'),errorMessage=document.getElementById('errorMessage');
-const counts=[10,20,40,50];const difficultyOptions=[{value:'all',label:'All levels'},{value:'Easy',label:'Easy'},{value:'Moderate',label:'Moderate'},{value:'Advanced',label:'Advanced'}];let selectedCount=null,selectedDifficulty='all';
-function topicQuestions(topic){return topic==='all'?questions:questions.filter(q=>(q.category||'General')===topic)}function normalizedDifficulty(q){const d=String(q.difficulty||'').trim().toLowerCase();if(d==='sce'||d==='advanced')return 'Advanced';if(d==='moderate'||d==='medium'||d==='intermediate')return 'Moderate';if(d==='easy'||d==='basic')return 'Easy';return ''}function filteredQuestions(topic,difficulty){const pool=topicQuestions(topic);return difficulty==='all'?pool:pool.filter(q=>normalizedDifficulty(q)===difficulty)}
-function populateTopics(){const topics=[...new Set(questions.map(q=>q.category||'General'))].sort();topicSelect.innerHTML='<option value="all">All topics</option>'+topics.map(t=>'<option value="'+String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+t+'</option>').join('');renderDifficulty();updateAvailable()}
-function renderDifficulty(){difficultyGrid.innerHTML='';difficultyOptions.forEach(opt=>{const b=document.createElement('button');b.type='button';b.className='choiceButton'+(selectedDifficulty===opt.value?' selected':'');b.textContent=opt.label;const n=filteredQuestions(topicSelect.value,opt.value).length;b.disabled=n===0;b.addEventListener('click',()=>{selectedDifficulty=opt.value;renderDifficulty();updateAvailable()});difficultyGrid.appendChild(b)});difficultyNote.textContent=''}
-function updateAvailable(){const pool=filteredQuestions(topicSelect.value,selectedDifficulty);availableText.textContent=pool.length+' question'+(pool.length===1?'':'s')+' available';summaryTopic.textContent=topicSelect.value==='all'?'All topics':topicSelect.value;summaryDifficulty.textContent=selectedDifficulty==='all'?'All levels':selectedDifficulty;renderCounts(pool.length)}
-function renderCounts(available){numberGrid.innerHTML='';for(const n of counts){const b=document.createElement('button');b.type='button';b.className='choiceButton'+(selectedCount===n?' selected':'');b.textContent=n;b.disabled=available<n;b.addEventListener('click',()=>{document.querySelectorAll('.numberGrid .choiceButton').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');selectedCount=n;summaryCount.textContent=n;errorMessage.textContent=''});numberGrid.appendChild(b)}if(!selectedCount||selectedCount>available){selectedCount=null;summaryCount.textContent='—'}}
-topicSelect.addEventListener('change',()=>{selectedDifficulty='all';selectedCount=null;renderDifficulty();updateAvailable()});document.getElementById('logoutButton').addEventListener('click',logout);document.getElementById('dashboardButton').addEventListener('click',()=>location.href='dashboard.html');document.getElementById('startButton').addEventListener('click',()=>{const pool=filteredQuestions(topicSelect.value,selectedDifficulty);if(!selectedCount||selectedCount>pool.length){errorMessage.textContent='Please select a valid number of questions.';return}localStorage.removeItem('neurologyMCQSessionMode');localStorage.setItem('neurologyMCQTestConfig',JSON.stringify({category:topicSelect.value,questionCount:selectedCount,difficulty:selectedDifficulty,createdAt:new Date().toISOString()}));localStorage.removeItem('neurologyMCQProgress');location.href='index.html'});populateTopics();
-</script></body></html>
+  <div class="field"><label for="topicSelect">SELECT TOPIC</label><select class="select" id="topicSelect"></select><div class="available" id="availableText"></div></div>
+  <div class="field"><label>SELECT DIFFICULTY LEVEL</label><div class="difficultyGrid" id="difficultyGrid"></div><div class="available" id="difficultyNote"></div></div>
+  <div class="field"><label>NUMBER OF QUESTIONS</label><div class="numberGrid" id="numberGrid"></div></div>
+  <div class="summary"><div>Topic: <strong id="summaryTopic">All topics</strong></div><div>Difficulty: <strong id="summaryDifficulty">All levels</strong></div><div>Questions: <strong id="summaryCount">—</strong></div></div>
+  <div class="error" id="errorMessage"></div>
+  <button class="start" id="startButton" type="button">Start Test</button>
+  <div class="note">Questions will be selected randomly from the chosen topic and difficulty.</div>
+</section>
+</main>
+<script src="auth.js"></script><script src="questions.js"></script>
+<script>
+const account=requireLogin();
+if(account){document.getElementById('profileName').textContent=account.fullName;}
+const topicSelect=document.getElementById('topicSelect'), difficultyGrid=document.getElementById('difficultyGrid'), numberGrid=document.getElementById('numberGrid'), availableText=document.getElementById('availableText'), difficultyNote=document.getElementById('difficultyNote'), summaryTopic=document.getElementById('summaryTopic'), summaryDifficulty=document.getElementById('summaryDifficulty'), summaryCount=document.getElementById('summaryCount'), errorMessage=document.getElementById('errorMessage');
+const counts=[10,20,40,50];
+const difficultyOptions=[{value:'all',label:'All levels'},{value:'Easy',label:'Easy'},{value:'Moderate',label:'Moderate'},{value:'Advanced',label:'Advanced'}];
+let selectedCount=null, selectedDifficulty='all';
+function topicQuestions(topic){return topic==='all'?questions:questions.filter(q=>(q.category||'General')===topic)}
+function normalizedDifficulty(q){const d=String(q.difficulty||'').trim().toLowerCase(); if(d==='sce'||d==='advanced')return 'Advanced'; if(d==='moderate'||d==='medium'||d==='intermediate')return 'Moderate'; if(d==='easy'||d==='basic')return 'Easy'; return ''}
+function filteredQuestions(topic,difficulty){const pool=topicQuestions(topic);return difficulty==='all'?pool:pool.filter(normalizedDifficulty(q)===difficulty)}
+function populateTopics(){const cats=[...new Set(questions.map(q=>q.category||'General'))].sort();topicSelect.innerHTML='<option value="all">All topics</option>'+cats.map(c=>'<option value="'+escapeHtml(c)+'">'+escapeHtml(c)+'</option>').join('');renderDifficulty();updateAvailable();}
+function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function renderDifficulty(){difficultyGrid.innerHTML='';difficultyOptions.forEach(d=>{const b=document.createElement('button');b.type='button';b.className='choiceButton';b.textContent=d.label;const n=d.value==='all'?topicQuestions(topicSelect.value).length:filteredQuestions(topicSelect.value,d.value).length;b.disabled=n===0;if(d.value===selectedDifficulty&&!b.disabled)b.classList.add('selected');b.addEventListener('click',()=>{selectedDifficulty=d.value;document.querySelectorAll('.difficultyGrid .choiceButton').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');summaryDifficulty.textContent=d.label;selectedCount=null;summaryCount.textContent='—';errorMessage.textContent='';renderCounts();});difficultyGrid.appendChild(b);});difficultyNote.textContent='Current question bank contains SCE-tagged items, which are treated as Advanced for difficulty filtering.'}
+function updateAvailable(){const n=filteredQuestions(topicSelect.value,selectedDifficulty).length;availableText.textContent=n+' question'+(n===1?'':'s')+' available';summaryTopic.textContent=topicSelect.value==='all'?'All topics':topicSelect.value;summaryDifficulty.textContent=difficultyOptions.find(d=>d.value===selectedDifficulty).label;renderCounts();}
+function renderCounts(){
+  const n=filteredQuestions(topicSelect.value,selectedDifficulty).length;
+  numberGrid.innerHTML='';
+  selectedCount=null;
+  summaryCount.textContent='—';
+  counts.forEach(c=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='choiceButton';
+    b.textContent=c;
+    b.disabled=c>n;
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.numberGrid .choiceButton').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected');
+      selectedCount=c;
+      summaryCount.textContent=c;
+      errorMessage.textContent='';
+    });
+    numberGrid.appendChild(b);
+  });
+  if(n>0 && n<10){
+    const b=document.createElement('button');
+    b.type='button';
+    b.className='choiceButton selected';
+    b.textContent=n;
+    b.setAttribute('aria-label','Use all '+n+' available questions');
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.numberGrid .choiceButton').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected');
+      selectedCount=n;
+      summaryCount.textContent=n;
+      errorMessage.textContent='';
+    });
+    numberGrid.appendChild(b);
+    selectedCount=n;
+    summaryCount.textContent=n;
+  }
+}
+topicSelect.addEventListener('change',()=>{selectedDifficulty='all';renderDifficulty();updateAvailable()});
+document.getElementById('logoutButton').addEventListener('click',logout);
+document.getElementById('dashboardButton').addEventListener('click',()=>location.href='dashboard.html');
+document.getElementById('startButton').addEventListener('click',()=>{const pool=filteredQuestions(topicSelect.value,selectedDifficulty);if(!selectedCount||selectedCount>pool.length){errorMessage.textContent='Please select a valid number of questions.';return}localStorage.setItem('neurologyMCQTestConfig',JSON.stringify({category:topicSelect.value,questionCount:selectedCount,difficulty:selectedDifficulty,createdAt:new Date().toISOString()}));localStorage.removeItem('neurologyMCQProgress');location.href='index.html'});
+populateTopics();
+</script>
+</body></html>

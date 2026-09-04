@@ -1013,3 +1013,192 @@ header, main, .container { position: relative; z-index: 1; }
 }
 .questionExposureInfo.newQuestion { color: var(--accent); border-color: rgba(31,111,100,.35); background: var(--accent-soft); }
 .questionExposureInfo.repeatQuestion { color: var(--ink-soft); }
+
+/* ---------- Mobile active-quiz layout fix ---------- */
+@media (max-width: 700px) {
+    #quizMain {
+        width: 100%;
+        max-width: 100%;
+        padding: 16px 16px 56px;
+        overflow-x: hidden;
+    }
+
+    #quizLayout {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+        align-items: start;
+    }
+
+    /* Flatten the question column on phones so the navigator can occupy
+       its own full-width row instead of sitting beside/squeezing the stem. */
+    #questionColumn {
+        display: contents;
+    }
+
+    #subject,
+    #questionHeaderRow,
+    #navigatorPanel,
+    #quizContainer {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
+    #subject { grid-row: 1; margin: 0 0 10px; }
+    #questionHeaderRow { grid-row: 2; }
+    #navigatorPanel {
+        grid-row: 3;
+        position: static;
+        margin: 4px 0 20px;
+    }
+    #quizContainer { grid-row: 4; }
+
+    #questionHeaderRow {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        margin-bottom: 8px;
+    }
+
+    #questionActions {
+        width: auto;
+        margin-left: auto;
+        flex: 1 1 auto;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    #questionActions button {
+        font-size: 13px;
+    }
+
+    #navigatorHeader {
+        margin-bottom: 8px;
+    }
+
+    #questionNavigator {
+        width: 100%;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    #questionNumbers {
+        width: 100%;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    .questionNumberButton {
+        height: 38px;
+        font-size: 12px;
+    }
+
+    .navigatorArrow {
+        width: 34px;
+        height: 38px;
+    }
+
+    #navigatorLegend {
+        gap: 7px 11px;
+        margin-bottom: 0;
+    }
+
+    #bankStats,
+    .questionExposureInfo {
+        width: 100%;
+    }
+
+    #questionStem {
+        width: 100%;
+        margin: 0 0 20px;
+    }
+
+    #question {
+        width: 100%;
+        font-size: 19px;
+        line-height: 1.48;
+        overflow-wrap: break-word;
+        word-break: normal;
+    }
+
+    .answerOption {
+        width: 100%;
+        margin: 9px 0;
+    }
+
+    .answerOption label {
+        width: 100%;
+        min-width: 0;
+        padding: 13px 12px;
+        gap: 11px;
+        font-size: 16px;
+        line-height: 1.45;
+        align-items: flex-start;
+        overflow-wrap: break-word;
+    }
+
+    .optionTag {
+        margin-top: 2px;
+    }
+
+    #primaryActionRow {
+        width: 100%;
+    }
+
+    #primaryActionRow button {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    #siteHeader {
+        padding: 20px 16px 0;
+    }
+
+    #siteHeader h1 {
+        font-size: 22px;
+    }
+
+    #headerRow {
+        align-items: center;
+    }
+
+    #headerStats {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 8px 10px;
+        min-width: 0;
+    }
+
+    #questionHeaderRow {
+        align-items: flex-start;
+    }
+
+    #questionNumber {
+        flex: 0 0 auto;
+        padding-top: 2px;
+    }
+
+    #questionActions {
+        flex: 1 1 240px;
+        min-width: 0;
+        justify-content: flex-end;
+    }
+
+    #questionActions button {
+        font-size: 12px;
+    }
+
+    #question {
+        font-size: 18px;
+        line-height: 1.5;
+    }
+
+    #navigatorLegend {
+        font-size: 10px;
+    }
+}
