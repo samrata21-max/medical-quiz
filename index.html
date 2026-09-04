@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Neurology MCQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header id="siteHeader">
+       <div id="headerRow">
+
+    <h1>Neurology MCQ</h1>
+
+    <div id="headerStats">
+        <span id="score"></span>
+        <span id="progress"></span>
+
+        <div id="progressContainer">
+            <div id="progressBar"></div>
+        </div>
+
+        <button type="button" id="finishButton">Finish quiz</button>
+    </div>
+
+</div>
+
+<svg id="waveform" viewBox="0 0 700 28" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,14 L60,14 L75,4 L90,24 L105,14 L160,14 L175,6 L190,22 L205,14 L260,14 L275,2 L290,26 L305,14 L360,14 L375,8 L390,20 L405,14 L460,14 L475,4 L490,24 L505,14 L560,14 L575,6 L590,22 L605,14 L660,14 L675,4 L690,24 L700,14" />
+</svg>
+    </header>
+
+    <main id="quizMain">
+
+    <!-- START SCREEN -->
+    <section id="startScreen">
+
+        <h2>Start a Quiz</h2>
+
+<p class="startSubtitle">
+    Select a topic and begin your Neurology MCQ
+</p>
+
+        <div id="startTopic">
+
+            <label for="categorySelect">
+                Select topic
+            </label>
+
+            <select id="categorySelect">
+                <option value="all">All topics</option>
+            </select>
+
+        </div>
+
+        <p id="questionCount"></p>
+
+        <button type="button" id="startQuizButton">
+            Start Quiz
+        </button>
+
+    </section>
+
+
+    <!-- QUIZ SCREEN -->
+    <div id="quizLayout">
+
+    <!-- LEFT: Question area -->
+    <section id="questionColumn">
+
+        
+
+        <h2 id="subject"></h2>
+
+        <div id="questionHeaderRow">
+            <strong id="questionNumber"></strong>
+
+            <div id="questionActions">
+                <button type="button" id="flagButton">⚑&nbsp; Flag for review</button>
+                <button type="button" id="previousButton">←&nbsp; Previous</button>
+                <button type="button" id="nextButton">Next &nbsp;→</button>
+            </div>
+        </div>
+
+        <p id="questionStem">
+            <span id="question"></span>
+        </p>
+
+        <div id="quizContainer">
+
+            <div class="answerOption">
+                <input type="radio" id="optionA" name="answer" value="A">
+                <label for="optionA" id="labelA">
+                    <span class="optionTag">A</span>
+                    <span class="optionText" id="labelAText"></span>
+                </label>
+            </div>
+
+            <div class="answerOption">
+                <input type="radio" id="optionB" name="answer" value="B">
+                <label for="optionB" id="labelB">
+                    <span class="optionTag">B</span>
+                    <span class="optionText" id="labelBText"></span>
+                </label>
+            </div>
+
+            <div class="answerOption">
+                <input type="radio" id="optionC" name="answer" value="C">
+                <label for="optionC" id="labelC">
+                    <span class="optionTag">C</span>
+                    <span class="optionText" id="labelCText"></span>
+                </label>
+            </div>
+
+            <div class="answerOption">
+                <input type="radio" id="optionD" name="answer" value="D">
+                <label for="optionD" id="labelD">
+                    <span class="optionTag">D</span>
+                    <span class="optionText" id="labelDText"></span>
+                </label>
+            </div>
+
+            <div id="primaryActionRow">
+                <button type="button" id="submitButton">Submit answer</button>
+            </div>
+
+            <p id="result"></p>
+            <p id="explanation"></p>
+
+        </div>
+
+    </section>
+
+
+    <!-- RIGHT: Question navigator -->
+    <aside id="navigatorPanel">
+
+        <div id="navigatorHeader">
+            <span>Questions</span>
+            <span id="navigatorRange"></span>
+        </div>
+
+        <nav id="questionNavigator"
+             aria-label="Question navigator">
+        </nav>
+
+        <div id="navigatorLegend"
+             aria-label="Question status legend">
+
+            <span>
+                <i class="legendDot current"></i>
+                Current
+            </span>
+
+            <span>
+                <i class="legendDot unanswered"></i>
+                Unanswered
+            </span>
+
+            <span>
+                <i class="legendDot correct"></i>
+                Correct
+            </span>
+
+            <span>
+                <i class="legendDot wrong"></i>
+                Incorrect
+            </span>
+
+            <span>
+                <i class="legendDot flagged"></i>
+                Flagged
+            </span>
+
+        </div>
+
+    </aside>
+
+</div>
+        
+
+        <div id="finalResult"></div>
+
+        <button type="button" id="restartButton" style="display: none;">Restart quiz</button>
+
+        <button type="button" id="reviewButton">Review answers</button>
+        <div id="reviewContainer"></div>
+
+    </main>
+
+    <div id="finishModal">
+        <div id="finishModalBox">
+            <h2>Finish quiz?</h2>
+            <p>Are you sure you want to finish the quiz?</p>
+            <div id="finishModalActions">
+                <button type="button" id="cancelFinishButton">Cancel</button>
+                <button type="button" id="confirmFinishButton">Finish quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="questions.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
