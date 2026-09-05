@@ -8,55 +8,89 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F6F5F0;--panel:#FFF;--ink:#202B2F;--soft:#5B6B70;--border:#DFDBCF;--accent:#1F6F64;--accent-soft:#DCEAE7;--serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",monospace}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans)}
-header{max-width:1100px;margin:auto;padding:28px 24px 0}.head{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{font:600 28px var(--serif)}.profile{display:flex;align-items:center;gap:13px;font-size:13px;color:var(--soft)}.gender{color:var(--accent);display:flex}.gender svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.dashboardNav,.logout{border:1px solid var(--border);background:none;color:var(--soft);padding:7px 13px;border-radius:4px;cursor:pointer}.dashboardNav:hover,.logout:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}.wave{height:22px;margin-top:14px;border-bottom:1px solid rgba(31,111,100,.28)}
-main{max-width:680px;margin:0 auto;padding:16px 24px 50px}.intro{text-align:center}.intro h1{font:600 29px var(--serif);margin:0 0 5px}.intro p{color:var(--soft);margin:0 0 18px}.panel{background:var(--panel);border:1px solid var(--border);padding:22px;border-radius:6px}.field{margin-bottom:19px}.field:last-child{margin-bottom:0}label{display:block;font-family:var(--mono);font-size:12px;color:var(--soft);margin-bottom:9px}.select{width:100%;height:42px;border:1px solid var(--border);background:#fff;color:var(--ink);font:14px var(--sans);padding:0 12px;border-radius:4px}.select:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}.available{font-size:12px;color:var(--soft);margin-top:8px}.difficultyGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.choiceButton{height:42px;border:1px solid var(--border);background:#fff;color:var(--ink);border-radius:4px;font:500 14px var(--sans);cursor:pointer}.choiceButton:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}.choiceButton.selected{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600;box-shadow:inset 0 0 0 1px var(--accent)}.choiceButton:disabled{opacity:.38;cursor:not-allowed;background:#F8F7F3}
-.summary{display:flex;gap:10px;margin-top:20px}.summaryItem{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;padding:12px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px}.summaryLabel{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--soft)}.summary strong{color:var(--ink);font-weight:600;font-size:14px;overflow-wrap:anywhere}
-.start{width:100%;height:44px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:4px;font:600 14px var(--sans);cursor:pointer;margin-top:18px}.start:hover{background:#185A51}.error{min-height:18px;text-align:center;color:#B14A3A;font-size:12px;margin-top:10px}.note{text-align:center;font-size:12px;color:var(--soft);margin-top:10px}
-#factsView{display:none}.factHeader{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:12px}.factHeader h2{font:600 24px var(--serif);margin:0}.factCount{font:12px var(--mono);color:var(--soft)}.factList{display:grid;gap:12px}.factCard{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:18px 20px}.factMeta{font:12px var(--mono);color:var(--accent);margin-bottom:8px}.factText{font:16px var(--serif);line-height:1.55}.factPoints{margin:0;padding-left:22px}.factPoints li{margin:5px 0}.factFooter{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:18px}.secondary{border:1px solid var(--border);background:none;color:var(--soft);padding:8px 13px;border-radius:4px;cursor:pointer;font:13px var(--sans)}.secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);height:34px;transform:translateX(-50%);pointer-events:none;opacity:.09;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 50' preserveAspectRatio='none'%3E%3Cpolyline points='0,25 300,25 340,25 350,10 362,40 374,25 405,25 430,25 442,18 450,32 458,25 900,25' fill='none' stroke='%231F6F64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}header,main{position:relative;z-index:1}
-@media(max-width:520px){.head{align-items:flex-start}.brand{font-size:24px}.profile{flex-wrap:wrap;justify-content:flex-end}.difficultyGrid{grid-template-columns:repeat(2,1fr)}main{padding-top:42px}.panel{padding:22px}.summary{flex-direction:column}.factHeader{display:block}.factCount{display:block;margin-top:5px}.factFooter{align-items:stretch;flex-direction:column}}
+:root{--bg:#F6F5F0;--panel:#FFF;--ink:#202B2F;--soft:#5B6B70;--border:#DFDBCF;--accent:#1F6F64;--accent-soft:#DCEAE7;--good:#5B8C5A;--good-bg:#E8F0E4;--bad:#B14A3A;--bad-bg:#F7E7E2;--serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+header{max-width:1100px;margin:auto;padding:28px 24px 0}.head{display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{font:600 28px var(--serif)}.profile{display:flex;align-items:center;gap:10px;color:var(--soft);font-size:13px}.profileIcon{display:inline-flex;color:var(--accent)}.profileIcon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.navButton,.logout,.secondary{border:1px solid var(--border);background:none;color:var(--soft);padding:7px 13px;border-radius:4px;cursor:pointer;font:13px var(--sans)}.navButton:hover,.logout:hover,.secondary:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.wave{height:22px;margin-top:14px;border-bottom:1px solid rgba(31,111,100,.28)}
+main{max-width:1000px;margin:0 auto;padding:58px 24px 80px}.intro{text-align:center}.intro h1{font:600 34px var(--serif);margin:0 0 7px}.intro p{color:var(--soft);margin:0 0 30px}
+.allTime{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:760px;margin:0 auto 24px}.metric{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:18px;text-align:center}.metric strong{display:block;font:600 29px var(--serif)}.metric span{display:block;margin-top:4px;color:var(--soft);font-size:11px;text-transform:uppercase;letter-spacing:.04em}.metric.done strong{color:var(--good)}
+.startPanel{max-width:680px;margin:0 auto;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:26px;text-align:center}.startPanel p{margin:0 0 18px;color:var(--soft);font-size:13px}.startButton{width:100%;height:48px;border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:4px;font:600 15px var(--sans);cursor:pointer}.startButton:hover{background:#185A51}.hint{margin:10px 0 0!important;font:11px var(--mono)!important}
+.session{display:none;grid-template-columns:minmax(0,2fr) minmax(240px,1fr);gap:20px;align-items:start}.contentPanel,.sidePanel,.completion{background:var(--panel);border:1px solid var(--border);border-radius:6px}.contentPanel{padding:28px}.factMeta{font:12px var(--mono);color:var(--accent);margin-bottom:14px}.factStatus{font:12px var(--mono);color:var(--soft);margin-bottom:14px}.factPrompt{font:600 26px var(--serif);line-height:1.35;margin:0 0 24px}
+/* Review Facts only: compact question text while actively reviewing. */
+body.reviewing-facts .factPrompt{font-size:21px}
+body.reviewing-facts .wave{display:none}.answerOptions{display:grid;gap:10px}.answerOption{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:4px;background:#fff;color:var(--ink);font:15px var(--sans);text-align:left;cursor:pointer}.answerOption:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}.answerOption.selected{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}.answerOption.correct{border-color:var(--good);background:var(--good-bg);color:var(--good)}.answerOption.wrong{border-color:var(--bad);background:var(--bad-bg);color:var(--bad)}.answerOption:disabled{cursor:default}.check{border:1px solid var(--accent);background:var(--accent);color:white;border-radius:4px;padding:11px 16px;font:600 14px var(--sans);cursor:pointer;margin-top:16px}.check:hover{background:#185A51}.check:disabled{opacity:.45;cursor:not-allowed}.feedback{display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}.feedback h3{font:600 20px var(--serif);margin:0 0 8px}.feedback p{margin:8px 0;color:var(--soft)}.feedback.correct h3{color:var(--good)}.feedback.incorrect h3{color:var(--bad)}.comparison{padding:12px 14px;background:var(--accent-soft);border-left:3px solid var(--accent);margin-top:14px}.nextRow{display:flex;justify-content:flex-end;margin-top:18px}.next{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:4px;padding:10px 15px;font:600 14px var(--sans);cursor:pointer}
+.sidePanel{padding:20px;position:sticky;top:18px}.sidePanel h2{font:600 21px var(--serif);margin:0 0 16px}.sideStat{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding:11px 0;color:var(--soft);font-size:13px}.sideStat strong{color:var(--ink)}.endSession{width:100%;border:1px solid var(--border);background:none;color:var(--soft);border-radius:4px;padding:10px;font:600 13px var(--sans);cursor:pointer;margin-top:12px}.endSession:hover{border-color:var(--bad);color:var(--bad);background:var(--bad-bg)}
+.completion{display:none;max-width:700px;margin:40px auto 0;padding:32px;text-align:center}.completion h2{font:600 30px var(--serif);margin:0 0 8px}.completion p{color:var(--soft)}.completionStats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:24px 0}.completionStat{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:15px}.completionStat strong{display:block;font:600 25px var(--serif)}.completionStat span{font-size:11px;color:var(--soft)}.dashboardAfter{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:4px;padding:11px 20px;font:600 14px var(--sans);cursor:pointer}.dashboardAfter:hover{background:#185A51}
+@media(max-width:760px){.head{align-items:flex-start}.brand{font-size:24px}.profile{flex-wrap:wrap;justify-content:flex-end}.session{grid-template-columns:1fr}.sidePanel{position:static;order:-1}.contentPanel{padding:22px}.factPrompt{font-size:23px}.allTime{grid-template-columns:1fr}.completionStats{grid-template-columns:1fr}}
+@media(max-width:480px){header{padding:24px 16px 0}main{padding:42px 16px 60px}.profile{gap:7px}.navButton,.logout{padding:6px 10px}.startPanel{padding:20px}}
 </style>
 </head>
 <body>
-<header><div class="head"><div class="brand">Neurology MCQ</div><div class="profile"><button class="dashboardNav" id="dashboardButton" type="button">Dashboard</button><span class="gender" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"></circle><path d="M5.5 21c.7-4.2 2.9-6.5 6.5-6.5s5.8 2.3 6.5 6.5"></path></svg></span><strong id="profileName"></strong><button class="logout" id="logoutButton" type="button">Logout</button></div></div><div class="wave"></div></header>
+<header>
+  <div class="head">
+    <div class="brand">Neurology MCQ</div>
+    <div class="profile">
+      <button class="navButton" id="dashboardButton" type="button">Dashboard</button>
+      <span class="profileIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"></circle><path d="M5.5 21c.7-4.2 2.9-6.5 6.5-6.5s5.8 2.3 6.5 6.5"></path></svg></span>
+      <strong id="profileName"></strong>
+      <button class="logout" id="logoutButton" type="button">Logout</button>
+    </div>
+  </div>
+  <div class="wave"></div>
+</header>
 <main>
-<section class="intro" id="selectionIntro"><h1>Review Facts</h1><p>Choose a topic and difficulty to review concise neurology facts.</p></section>
-<section class="panel" id="selectionPanel">
-  <div class="field"><label for="topicSelect">SELECT TOPIC</label><select class="select" id="topicSelect"></select><div class="available" id="availableText"></div></div>
-  <div class="field"><label>SELECT DIFFICULTY LEVEL</label><div class="difficultyGrid" id="difficultyGrid"></div></div>
-  <div class="summary"><div class="summaryItem"><span class="summaryLabel">Topic</span><strong id="summaryTopic">All topics</strong></div><div class="summaryItem"><span class="summaryLabel">Difficulty</span><strong id="summaryDifficulty">All levels</strong></div><div class="summaryItem"><span class="summaryLabel">Facts</span><strong id="summaryCount">—</strong></div></div>
-  <div class="error" id="errorMessage"></div>
-  <button class="start" id="startButton" type="button">Start Review</button>
-  <div class="note">All facts matching the chosen topic and difficulty will be shown.</div>
-</section>
-<section id="factsView">
-  <div class="factHeader"><h2 id="factsHeading">Neurology facts</h2><span class="factCount" id="factCount"></span></div>
-  <div class="factList" id="factList"></div>
-  <div class="factFooter"><button class="secondary" id="changeSelectionButton" type="button">Change selection</button><button class="secondary" id="dashboardAfterFacts" type="button">Dashboard</button></div>
-</section>
+  <section class="intro" id="homeView">
+    <h1>Review Facts</h1>
+    <p>Build long-term recall by revisiting high-yield neurology facts.</p>
+    <div class="allTime" aria-label="All-time fact progress">
+      <div class="metric"><strong id="totalFacts">0</strong><span>Total facts available</span></div>
+      <div class="metric done"><strong id="doneFacts">0</strong><span>Done &amp; Dusted</span></div>
+      <div class="metric"><strong id="remainingFacts">0</strong><span>Facts remaining</span></div>
+    </div>
+    <div class="startPanel">
+      <p>Facts are selected randomly from your unfinished learning pool.</p>
+      <button class="startButton" id="startButton" type="button">Start Review</button>
+      <p class="hint">A fact becomes Done &amp; Dusted after 3 correct answers in 3 different sessions.</p>
+    </div>
+  </section>
+
+  <section class="session" id="session">
+    <article class="contentPanel">
+      <div class="factMeta" id="factMeta"></div>
+      <div class="factStatus" id="factStatus"></div>
+      <h2 class="factPrompt" id="factPrompt"></h2>
+      <div class="answerOptions" id="answerOptions"></div>
+      <div class="feedback" id="feedback">
+        <h3 id="feedbackHeading"></h3>
+        <p id="factAnswer"></p>
+        <p id="factExplanation"></p>
+        <div class="comparison" id="factComparison" hidden></div>
+        <div class="nextRow"><button class="next" id="nextButton" type="button">Next fact</button></div>
+      </div>
+    </article>
+    <aside class="sidePanel">
+      <h2>Review session</h2>
+      <div class="sideStat"><span>Progress</span><strong id="sessionProgress">0 of 0</strong></div>
+      <div class="sideStat"><span>Reviewed this session</span><strong id="sessionReviewed">0</strong></div>
+      <div class="sideStat"><span>Correct this session</span><strong id="sessionCorrect">0</strong></div>
+      <div class="sideStat"><span>Done &amp; Dusted</span><strong id="sessionDone">0</strong></div>
+      <button class="endSession" id="endSession" type="button">End Session</button>
+    </aside>
+  </section>
+
+  <section class="completion" id="completion">
+    <h2>Review session complete</h2>
+    <p id="completionMessage"></p>
+    <div class="completionStats">
+      <div class="completionStat"><strong id="completionReviewed">0</strong><span>Facts reviewed</span></div>
+      <div class="completionStat"><strong id="completionCorrect">0</strong><span>Correct this session</span></div>
+      <div class="completionStat"><strong id="completionDone">0</strong><span>Done &amp; Dusted overall</span></div>
+    </div>
+    <button class="dashboardAfter" id="dashboardAfter" type="button">Dashboard</button>
+  </section>
 </main>
-<script src="auth.js"></script><script src="facts.js"></script>
-<script>
-const account=requireLogin();
-if(account) document.getElementById('profileName').textContent=account.fullName;
-document.getElementById('logoutButton').addEventListener('click',logout);
-document.getElementById('dashboardButton').addEventListener('click',()=>location.href='dashboard.html');
-document.getElementById('dashboardAfterFacts').addEventListener('click',()=>location.href='dashboard.html');
-const topicSelect=document.getElementById('topicSelect'), difficultyGrid=document.getElementById('difficultyGrid'), availableText=document.getElementById('availableText'), summaryTopic=document.getElementById('summaryTopic'), summaryDifficulty=document.getElementById('summaryDifficulty'), summaryCount=document.getElementById('summaryCount'), errorMessage=document.getElementById('errorMessage');
-const difficultyOptions=[{value:'all',label:'All levels'},{value:'Easy',label:'Easy'},{value:'Moderate',label:'Moderate'},{value:'Advanced',label:'Advanced'}];
-let selectedDifficulty='all';
-function filteredFacts(){return facts.filter(f=>(topicSelect.value==='all'||f.category===topicSelect.value)&&(selectedDifficulty==='all'||f.difficulty===selectedDifficulty));}
-function populateTopics(){const topics=[...new Set(facts.map(f=>f.category))].sort();topicSelect.innerHTML='<option value="all">All topics</option>'+topics.map(t=>'<option value="'+escapeHtml(t)+'">'+escapeHtml(t)+'</option>').join('');renderDifficulty();updateAvailable();}
-function escapeHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
-function renderDifficulty(){difficultyGrid.innerHTML='';difficultyOptions.forEach(opt=>{const n=facts.filter(f=>(topicSelect.value==='all'||f.category===topicSelect.value)&&(opt.value==='all'||f.difficulty===opt.value)).length;const b=document.createElement('button');b.type='button';b.className='choiceButton'+(selectedDifficulty===opt.value?' selected':'');b.textContent=opt.label;b.disabled=n===0;b.addEventListener('click',()=>{selectedDifficulty=opt.value;renderDifficulty();updateAvailable();});difficultyGrid.appendChild(b);});}
-function updateAvailable(){const n=filteredFacts().length;availableText.textContent=n+' fact'+(n===1?'':'s')+' available';summaryTopic.textContent=topicSelect.value==='all'?'All topics':topicSelect.value;summaryDifficulty.textContent=selectedDifficulty==='all'?'All levels':selectedDifficulty;summaryCount.textContent=n||'—';errorMessage.textContent='';}
-function renderFacts(){const list=document.getElementById('factList');const selected=filteredFacts();if(!selected.length){errorMessage.textContent='No facts are available for this selection.';return;}document.getElementById('selectionIntro').style.display='none';document.getElementById('selectionPanel').style.display='none';document.getElementById('factsView').style.display='block';document.getElementById('factsHeading').textContent=(topicSelect.value==='all'?'Neurology':topicSelect.value)+' facts';document.getElementById('factCount').textContent=selected.length+' fact'+(selected.length===1?'':'s');list.innerHTML=selected.map((f,i)=>{const content=Array.isArray(f.points)?'<ul class="factPoints">'+f.points.map(p=>'<li>'+escapeHtml(p)+'</li>').join('')+'</ul>':'<div class="factText">'+escapeHtml(f.fact)+'</div>';return '<article class="factCard"><div class="factMeta">'+escapeHtml(f.difficulty)+' · Fact '+(i+1)+'</div>'+content+'</article>';}).join('');}
-topicSelect.addEventListener('change',()=>{selectedDifficulty='all';renderDifficulty();updateAvailable();});
-document.getElementById('startButton').addEventListener('click',renderFacts);
-document.getElementById('changeSelectionButton').addEventListener('click',()=>{document.getElementById('factsView').style.display='none';document.getElementById('selectionIntro').style.display='block';document.getElementById('selectionPanel').style.display='block';});
-populateTopics();
-</script>
+<script src="auth.js"></script>
+<script src="facts.js"></script>
+<script src="review-facts.js"></script>
 </body>
 </html>

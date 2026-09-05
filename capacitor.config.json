@@ -1,0 +1,6 @@
+{
+  "appId": "com.neurologymcq.app",
+  "appName": "Neurology MCQ",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}

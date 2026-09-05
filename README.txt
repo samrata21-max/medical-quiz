@@ -27,6 +27,8 @@ Recent feature additions
 - Review navigation supports clickable status buttons and laptop Left/Right Arrow keys.
 - Questions can expose one or more medical images through an `images` array (or a single `image` field); the Images button is hidden when none are present. Images open in a centered viewer with close, Esc and multi-image navigation support.
 - Dashboard includes a persistent local Subscribe/Subscribed status and Test History.
+- Dashboard includes an overall Performance card with accuracy, answered questions and completed-test counts.
+- Dashboard includes Neurology Textbook Revision with book selection and chapterwise revision selection based on the learning facts library.
 - Test History stores completed sessions and can open a previous test review when the question IDs are still present in the current question bank.
 - Subscription and test history are local browser storage features in this development version; no real payment/subscription service is connected.
 
@@ -46,6 +48,12 @@ Question Bank session
 - The live Question Bank navigator shows current-session correct/incorrect counts and question exposure status (New or Repeat with seen/correct totals).
 - End of session opens a summary without a Review answers action.
 - Question Bank exposure statistics are stored per signed-in user in local browser storage.
+- Question Bank selection no longer shows the coverage/progression banner; live quiz question navigation remains available.
+
+Test timing
+-----------
+- Normal test questions have a 55-second question timer.
+- Question Bank and Review Mistakes sessions do not use a question timer.
 
 Test History
 - Test History has a Clear History button that removes saved completed-test records and the selected history-review pointer.
@@ -56,3 +64,20 @@ Question bank content
 Review Facts
 ------------
 Review Facts is an independent learning module. Its content is stored in facts.js and is not part of the MCQ question bank or Question Bank exposure statistics. The Review Facts page filters facts by topic and difficulty; it does not ask the user to choose a number of facts.
+
+Review Facts now uses review-facts.js for a dedicated, untimed one-fact-at-a-time learning session. Fact progress is stored separately per user under neurologyMCQFactStats_<userId>. Each fact is removed from normal Review Facts selections after three correct answers in separate sessions. When all facts are complete, the user can explicitly begin the full fact journey again.
+
+Capacitor Android packaging
+---------------------------
+The website is configured to be packaged as a Capacitor Android app. Install Node.js LTS and Android Studio, then open PowerShell in this folder and run:
+
+	npm install
+	npx cap add android
+	npx cap sync android
+	npx cap open android
+
+Build or run the app from Android Studio. After changing the website files, run:
+
+	npx cap sync android
+
+The Android application ID is com.neurologymcq.app. The current project uses localStorage, so login, progress and history remain on the individual device until a backend and cloud synchronization are added.

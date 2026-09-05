@@ -10,6 +10,16 @@ const TEST_HISTORY_KEY = "neurologyMCQTestHistory";
 const QUESTION_STATS_KEY = "neurologyMCQQuestionStats";
 const modeRaw = localStorage.getItem("neurologyMCQSessionMode");
 const isQuestionBankMode = modeRaw === "questionBank";
+const isReviewMistakesMode = modeRaw === "reviewMistakes";
+let reviewFilter = "all";
+let reviewTopic = "";
+if (isReviewMistakesMode) {
+    try {
+        const reviewConfig = JSON.parse(localStorage.getItem("neurologyMCQReviewMistakesConfig") || "{}");
+        reviewFilter = reviewConfig.filter || "all";
+        reviewTopic = reviewConfig.topic || "";
+    } catch (error) {}
+}
 const STORAGE_KEY = isQuestionBankMode ? BANK_PROGRESS_KEY : TEST_PROGRESS_KEY;
 const QUESTION_BANK_VERSION = "v3";
 
@@ -26,7 +36,7 @@ let testStartedAt = null;
 let elapsedSeconds = 0;
 let timerInterval = null;
 let questionTimerInterval = null;
-const QUESTION_TIME_LIMIT = 80;
+const QUESTION_TIME_LIMIT = 55;
 let questionDeadlines = [];
 let timedOutQuestions = [];
 let completedTest = false;
@@ -86,6 +96,24 @@ function getFilteredQuestions(category, difficulty) {
 
     if (!difficulty || difficulty === "all") return pool;
     return pool.filter(function(q) { return normalizeDifficulty(q) === difficulty; });
+}
+
+function getReviewMistakeQuestions() {
+    const stats = getQuestionStats();
+    let pool = questions.filter(function(q) {
+        const entry = stats[q.id];
+        return entry && (Number(entry.incorrect) || 0) > 0 && (Number(entry.reviewCorrect) || 0) < 3;
+    });
+    if (reviewFilter === "topic" && reviewTopic) {
+        pool = pool.filter(function(q) { return (q.category || "General") === reviewTopic; });
+    } else if (reviewFilter === "repeated") {
+        pool = pool.filter(function(q) { return (Number(stats[q.id].incorrect) || 0) > 1; });
+    } else if (reviewFilter === "recent") {
+        pool.sort(function(a, b) {
+            return String(stats[b.id].lastIncorrectAt || "").localeCompare(String(stats[a.id].lastIncorrectAt || ""));
+        });
+    }
+    return pool;
 }
 
 function getQuestionImages(q) {
@@ -185,6 +213,12 @@ function handleQuestionTimeout() {
                 navigateToQuestion(nextIndex);
             }
         }, 350);
+    } else if (isReviewMistakesMode) {
+        finishButton.textContent = "End review";
+        const confirmButton = document.getElementById("confirmFinishButton");
+        const modalTitle = document.querySelector("#finishModalBox h2");
+        if (modalTitle) modalTitle.textContent = "End review?";
+        if (confirmButton) confirmButton.textContent = "End review";
     } else {
         setTimeout(function() {
             if (!completedTest && timedOutQuestions[currentQuestion]) finishTestNow();
@@ -233,8 +267,8 @@ function showQuizUI() {
     document.getElementById("questionActions").style.display = "flex";
     scoreDisplay.style.display = "block";
     finishButton.style.display = "inline-flex";
-    result.style.display = isQuestionBankMode ? "block" : "none";
-    explanation.style.display = isQuestionBankMode ? "block" : "none";
+    result.style.display = isQuestionBankMode || isReviewMistakesMode ? "block" : "none";
+    explanation.style.display = isQuestionBankMode || isReviewMistakesMode ? "block" : "none";
     if (dashboardButton) dashboardButton.style.display = "none";
     if (timerDisplay) timerDisplay.style.display = isQuestionBankMode ? "none" : "inline-flex";
     const bankStats = document.getElementById("bankStats");
@@ -247,6 +281,8 @@ function showQuizUI() {
         const modalTitle = document.querySelector("#finishModalBox h2");
         if (modalTitle) modalTitle.textContent = "End session?";
         if (confirmButton) confirmButton.textContent = "End of session";
+    } else if (isReviewMistakesMode) {
+        if (timerDisplay) timerDisplay.style.display = "none";
     } else {
         finishButton.textContent = "Finish test";
         const confirmButton = document.getElementById("confirmFinishButton");
@@ -260,7 +296,9 @@ function showQuizUI() {
 }
 
 function startNewQuiz(category, requestedCount, difficulty, startedAt) {
-    const availableQuestions = getFilteredQuestions(category, difficulty || "all");
+    const availableQuestions = isReviewMistakesMode
+        ? getReviewMistakeQuestions()
+        : getFilteredQuestions(category, difficulty || "all");
     const count = Math.min(Number(requestedCount) || availableQuestions.length, availableQuestions.length);
     if (!availableQuestions.length || count <= 0) return;
 
@@ -282,9 +320,9 @@ function startNewQuiz(category, requestedCount, difficulty, startedAt) {
     if (isQuestionBankMode) window._questionBankSeenThisSession = new Set();
 
     scoreDisplay.textContent = "Score: 0";
-    if (timerDisplay) timerDisplay.textContent = "Time left 01:20";
+    if (timerDisplay) timerDisplay.textContent = "Time left 00:55";
 
-    if (isQuestionBankMode) {
+    if (isQuestionBankMode || isReviewMistakesMode) {
         testStartedAt = startedAt || Date.now();
         elapsedSeconds = 0;
         stopTimer();
@@ -417,13 +455,14 @@ function displayQuestion() {
         recordQuestionExposure(question);
         updateQuestionBankStats();
         updateExposureInfo();
+    } else if (isReviewMistakesMode) {
+        if (timerDisplay) timerDisplay.style.display = "none";
     } else {
         startQuestionTimer();
     }
 }
 
 function getQuestionStats() {
-    if (!isQuestionBankMode) return {};
     const key = QUESTION_STATS_KEY + "_" + String(_account.userId || "default");
     try {
         const raw = localStorage.getItem(key);
@@ -435,7 +474,6 @@ function getQuestionStats() {
 }
 
 function saveQuestionStats(stats) {
-    if (!isQuestionBankMode) return;
     const key = QUESTION_STATS_KEY + "_" + String(_account.userId || "default");
     try { localStorage.setItem(key, JSON.stringify(stats)); } catch (error) {}
 }
@@ -465,6 +503,24 @@ function updateQuestionBankStats() {
     });
     document.getElementById("bankCorrectCount").textContent = correct;
     document.getElementById("bankIncorrectCount").textContent = incorrect;
+}
+
+function recordAnsweredQuestion(q, isCorrect) {
+    if (!q) return;
+    const stats = getQuestionStats();
+    const entry = stats[q.id] || { seen: 0, correct: 0, incorrect: 0 };
+    entry.seen = Number(entry.seen) || 0;
+    entry.correct = Number(entry.correct) || 0;
+    entry.incorrect = Number(entry.incorrect) || 0;
+    if (!isQuestionBankMode) entry.seen++;
+    if (isCorrect) entry.correct++; else entry.incorrect++;
+    entry.lastAnswerCorrect = isCorrect;
+    entry.lastAttemptedAt = new Date().toISOString();
+    if (isCorrect && isReviewMistakesMode) entry.reviewCorrect = (Number(entry.reviewCorrect) || 0) + 1;
+    if (!isCorrect) entry.reviewCorrect = 0;
+    if (!isCorrect) entry.lastIncorrectAt = new Date().toISOString();
+    stats[q.id] = entry;
+    saveQuestionStats(stats);
 }
 
 function updateExposureInfo() {
@@ -557,15 +613,9 @@ submitButton.addEventListener("click", function() {
         explanation.textContent = "The correct answer is " + quizQuestions[currentQuestion].correctAnswer + ". " + (quizQuestions[currentQuestion].explanation || "");
     }
 
+    recordAnsweredQuestion(quizQuestions[currentQuestion], isCorrect);
+
     if (isQuestionBankMode) {
-        const stats = getQuestionStats();
-        const entry = stats[quizQuestions[currentQuestion].id] || { seen: 1, correct: 0, incorrect: 0 };
-        entry.seen = Math.max(1, Number(entry.seen) || 1);
-        entry.correct = Number(entry.correct) || 0;
-        entry.incorrect = Number(entry.incorrect) || 0;
-        if (isCorrect) entry.correct++; else entry.incorrect++;
-        stats[quizQuestions[currentQuestion].id] = entry;
-        saveQuestionStats(stats);
         updateQuestionBankStats();
         updateExposureInfo();
         saveProgress();
@@ -634,7 +684,7 @@ function showResultsSummary() {
     document.getElementById("unansweredCount").textContent = stats.unanswered;
     document.getElementById("timeTaken").textContent = "Time taken: " + formatTime(elapsedSeconds);
     const resultsHeading = document.querySelector("#resultsSummary .resultsHeading");
-    if (resultsHeading) resultsHeading.textContent = isQuestionBankMode ? "Session completed" : "Test completed";
+    if (resultsHeading) resultsHeading.textContent = isQuestionBankMode ? "Session completed" : (isReviewMistakesMode ? "Mistake review completed" : "Test completed");
     resultsSummary.style.display = "block";
     reviewButton.style.display = isQuestionBankMode ? "none" : "inline-flex";
     document.getElementById("timeTaken").style.display = isQuestionBankMode ? "none" : "block";
@@ -655,7 +705,8 @@ finishButton.addEventListener("click", function() {
     if (isQuestionBankMode) {
         if (!message) message = "Are you sure you want to end this session?";
         else message += "Are you sure you want to end this session?";
-    } else if (!message) message = "Are you sure you want to finish the test?";
+    } else if (isReviewMistakesMode && !message) message = "Are you sure you want to end this review?";
+    else if (!message) message = "Are you sure you want to finish the test?";
     else message += "Are you sure you want to finish?";
     document.querySelector("#finishModalBox p").textContent = message;
     document.getElementById("finishModal").style.display = "flex";
@@ -689,7 +740,7 @@ function finishTestNow() {
     if (timerDisplay) timerDisplay.style.display = "none";
     if (dashboardButton) dashboardButton.style.display = "inline-flex";
 
-    if (!isQuestionBankMode) saveTestSession(stats);
+    if (!isQuestionBankMode && !isReviewMistakesMode) saveTestSession(stats);
     clearSavedProgress();
     localStorage.removeItem("neurologyMCQSessionMode");
 }
@@ -887,30 +938,30 @@ if (imagesButton) imagesButton.style.display = "none";
 const resumed = restoreProgress();
 
 if (!resumed) {
-const configKey = isQuestionBankMode ? "neurologyMCQQuestionBankConfig" : "neurologyMCQTestConfig";
+const configKey = isQuestionBankMode ? "neurologyMCQQuestionBankConfig" : (isReviewMistakesMode ? "neurologyMCQReviewMistakesConfig" : "neurologyMCQTestConfig");
 const testConfigRaw = localStorage.getItem(configKey);
 if (testConfigRaw) {
     try {
         const testConfig = JSON.parse(testConfigRaw);
         if (testConfig && typeof testConfig.category === "string" && Number(testConfig.questionCount) > 0) {
-            const pool = getFilteredQuestions(testConfig.category, testConfig.difficulty || "all");
+            const pool = isReviewMistakesMode ? getReviewMistakeQuestions() : getFilteredQuestions(testConfig.category, testConfig.difficulty || "all");
             const count = Math.min(Number(testConfig.questionCount), pool.length);
             if (count > 0) {
                 localStorage.removeItem(configKey);
                 startNewQuiz(testConfig.category, count, testConfig.difficulty || "all", Date.now());
             } else {
                 localStorage.removeItem(configKey);
-                window.location.replace(isQuestionBankMode ? "question-bank.html" : "start-test.html");
+                window.location.replace(isQuestionBankMode ? "question-bank.html" : "dashboard.html");
             }
         } else {
             localStorage.removeItem(configKey);
-            window.location.replace(isQuestionBankMode ? "question-bank.html" : "start-test.html");
+            window.location.replace(isQuestionBankMode ? "question-bank.html" : "dashboard.html");
         }
     } catch (error) {
         localStorage.removeItem(configKey);
-        window.location.replace(isQuestionBankMode ? "question-bank.html" : "start-test.html");
+        window.location.replace(isQuestionBankMode ? "question-bank.html" : "dashboard.html");
     }
 } else {
-    window.location.replace("start-test.html");
+    window.location.replace(isReviewMistakesMode ? "dashboard.html" : "start-test.html");
 }
 }

@@ -1,52 +1,282 @@
 const facts = [
-  {id:"fact001",category:"Cerebrovascular Neurology",difficulty:"Easy",fact:"The middle cerebral artery is the most common arterial territory involved in acute ischemic stroke."},
-  {id:"fact002",category:"Cerebrovascular Neurology",difficulty:"Easy",fact:"A dominant-hemisphere middle cerebral artery stroke commonly causes aphasia when language cortex is involved."},
-  {id:"fact003",category:"Cerebrovascular Neurology",difficulty:"Moderate",fact:"Lacunar infarction classically results from occlusion of a small penetrating artery and can produce pure motor or pure sensory syndromes."},
-  {id:"fact004",category:"Cerebrovascular Neurology",difficulty:"Advanced",points:["An internal carotid artery occlusion can produce both anterior and middle cerebral territory ischemia depending on collateral flow.","The ophthalmic artery may also be affected, producing ipsilateral retinal ischemic symptoms."]},
-  {id:"fact005",category:"Epilepsy",difficulty:"Easy",fact:"A focal aware seizure begins in a localized network while awareness is preserved."},
-  {id:"fact006",category:"Epilepsy",difficulty:"Easy",fact:"Absence seizures typically cause brief staring with impaired awareness and a characteristic generalized 3-Hz spike-and-wave EEG pattern."},
-  {id:"fact007",category:"Epilepsy",difficulty:"Moderate",fact:"Temporal lobe seizures may begin with a rising epigastric sensation, followed by behavioral arrest and automatisms."},
-  {id:"fact008",category:"Epilepsy",difficulty:"Advanced",fact:"Status epilepticus is a time-critical neurologic emergency because prolonged seizure activity can become increasingly resistant to treatment and cause neuronal injury."},
-  {id:"fact009",category:"Movement Disorders",difficulty:"Easy",fact:"Bradykinesia is a core motor feature of Parkinson disease."},
-  {id:"fact010",category:"Movement Disorders",difficulty:"Easy",fact:"Rest tremor in Parkinson disease classically appears when the affected limb is relaxed and may lessen with voluntary movement."},
-  {id:"fact011",category:"Movement Disorders",difficulty:"Moderate",fact:"Early recurrent falls and impaired vertical eye movements should raise suspicion for progressive supranuclear palsy rather than typical Parkinson disease."},
-  {id:"fact012",category:"Movement Disorders",difficulty:"Advanced",fact:"Corticobasal syndrome may combine asymmetric parkinsonism with cortical signs such as apraxia, cortical sensory loss or alien-limb phenomena."},
-  {id:"fact013",category:"Headache",difficulty:"Easy",fact:"Migraine commonly causes recurrent moderate-to-severe headache with nausea and/or sensitivity to light and sound."},
-  {id:"fact014",category:"Headache",difficulty:"Easy",fact:"Cluster headache produces severe unilateral orbital or temporal pain with ipsilateral cranial autonomic features."},
-  {id:"fact015",category:"Headache",difficulty:"Moderate",fact:"Medication-overuse headache should be considered when frequent acute headache medication use accompanies headaches on many days."},
-  {id:"fact016",category:"Headache",difficulty:"Advanced",fact:"A new thunderclap headache requires urgent evaluation for secondary causes, particularly subarachnoid hemorrhage and other vascular disorders."},
-  {id:"fact017",category:"Neuromuscular",difficulty:"Easy",fact:"Myasthenia gravis typically causes fluctuating fatigable weakness, often affecting ocular and bulbar muscles."},
-  {id:"fact018",category:"Neuromuscular",difficulty:"Easy",fact:"Creatine kinase is often markedly elevated in inflammatory or necrotizing myopathies but is usually normal in myasthenia gravis."},
-  {id:"fact019",category:"Neuromuscular",difficulty:"Moderate",fact:"Lambert-Eaton myasthenic syndrome causes proximal weakness with autonomic symptoms and reduced reflexes that may facilitate after activation."},
-  {id:"fact020",category:"Neuromuscular",difficulty:"Advanced",fact:"In immune-mediated necrotizing myopathy, substantial proximal weakness with very high CK should prompt evaluation for an autoimmune myopathy and associated triggers."},
-  {id:"fact021",category:"Peripheral Neurology",difficulty:"Easy",fact:"Length-dependent polyneuropathy usually begins with sensory symptoms in the feet before progressing proximally."},
-  {id:"fact022",category:"Peripheral Neurology",difficulty:"Easy",fact:"Carpal tunnel syndrome is caused by median nerve compression at the wrist."},
-  {id:"fact023",category:"Peripheral Neurology",difficulty:"Moderate",fact:"Guillain-Barré syndrome classically presents with progressive weakness and reduced or absent reflexes after an antecedent infection."},
-  {id:"fact024",category:"Peripheral Neurology",difficulty:"Advanced",fact:"Multifocal motor neuropathy produces asymmetric distal weakness without prominent sensory loss and may show conduction block outside typical entrapment sites."},
-  {id:"fact025",category:"Multiple Sclerosis",difficulty:"Easy",fact:"Optic neuritis in multiple sclerosis often causes subacute monocular visual loss with pain on eye movement."},
-  {id:"fact026",category:"Multiple Sclerosis",difficulty:"Easy",fact:"Multiple sclerosis is characterized by neurologic lesions disseminated in space and time."},
-  {id:"fact027",category:"Multiple Sclerosis",difficulty:"Moderate",fact:"Oligoclonal IgG bands in cerebrospinal fluid support the diagnosis of multiple sclerosis but are not specific to it."},
-  {id:"fact028",category:"Multiple Sclerosis",difficulty:"Advanced",fact:"A longitudinally extensive spinal cord lesion should prompt consideration of disorders such as neuromyelitis optica spectrum disorder and MOG-associated disease, not only multiple sclerosis."},
-  {id:"fact029",category:"Neuroinfectious Disease",difficulty:"Easy",fact:"Acute bacterial meningitis usually produces neutrophil-predominant CSF pleocytosis, elevated protein and reduced CSF glucose."},
-  {id:"fact030",category:"Neuroinfectious Disease",difficulty:"Easy",fact:"Tuberculous meningitis commonly causes a lymphocytic CSF pleocytosis, high protein and low glucose."},
-  {id:"fact031",category:"Neuroinfectious Disease",difficulty:"Moderate",fact:"Cryptococcal meningitis should be considered in severely immunocompromised patients with subacute headache and raised intracranial pressure."},
-  {id:"fact032",category:"Neuroinfectious Disease",difficulty:"Advanced",fact:"Brain abscesses often appear as ring-enhancing lesions with surrounding edema, but the imaging differential includes tumors and demyelinating lesions."},
-  {id:"fact033",category:"Neuro-ophthalmology",difficulty:"Easy",fact:"A homonymous hemianopia localizes posterior to the optic chiasm."},
-  {id:"fact034",category:"Neuro-ophthalmology",difficulty:"Easy",fact:"A third-nerve palsy with a dilated poorly reactive pupil and a down-and-out eye position is an emergency until compressive causes such as aneurysm are excluded."},
-  {id:"fact035",category:"Neuro-ophthalmology",difficulty:"Moderate",fact:"A pupil-sparing third-nerve palsy is more typical of microvascular ischemia, although clinical context determines the need for urgent imaging."},
-  {id:"fact036",category:"Neuro-ophthalmology",difficulty:"Advanced",fact:"Raised intracranial pressure can cause papilledema, but progressive visual field loss despite treatment requires urgent reassessment and vision-preserving management."},
-  {id:"fact037",category:"Cognitive Neurology",difficulty:"Easy",fact:"The hippocampal formation is essential for forming new declarative memories."},
-  {id:"fact038",category:"Cognitive Neurology",difficulty:"Easy",fact:"Frontotemporal dementia often presents earlier than typical Alzheimer disease and may prominently affect behavior or language."},
-  {id:"fact039",category:"Cognitive Neurology",difficulty:"Moderate",fact:"Dementia with Lewy bodies is characterized by cognitive fluctuations, recurrent visual hallucinations and parkinsonism, often with REM sleep behavior disorder."},
-  {id:"fact040",category:"Cognitive Neurology",difficulty:"Advanced",fact:"Posterior cortical atrophy is a neurodegenerative syndrome in which visuospatial or visuoperceptual dysfunction can predominate despite relatively preserved memory early in the course."},
-  {id:"fact041",category:"Neuroanatomy",difficulty:"Easy",fact:"The corticospinal tract carries major descending motor fibers from the cerebral cortex to the spinal cord."},
-  {id:"fact042",category:"Neuroanatomy",difficulty:"Easy",fact:"A spinal cord hemisection can produce ipsilateral weakness and loss of vibration/proprioception with contralateral pain and temperature loss below the lesion."},
-  {id:"fact043",category:"Neuroanatomy",difficulty:"Moderate",fact:"The medial lemniscus carries vibration, proprioception and discriminative touch after the dorsal-column pathways cross in the medulla."},
-  {id:"fact044",category:"Neuroanatomy",difficulty:"Advanced",fact:"A lateral medullary lesion can combine ipsilateral facial pain-temperature loss with contralateral body pain-temperature loss because the spinal trigeminal and spinothalamic pathways are both involved."},
-  {id:"fact045",category:"Sleep Neurology",difficulty:"Easy",fact:"REM sleep behavior disorder is characterized by dream enactment due to loss of normal REM-related muscle atonia."},
-  {id:"fact046",category:"Sleep Neurology",difficulty:"Moderate",fact:"Obstructive sleep apnea is characterized by recurrent upper-airway obstruction during sleep with intermittent hypoxemia and sleep fragmentation."},
-  {id:"fact047",category:"Sleep Neurology",difficulty:"Advanced",fact:"Isolated REM sleep behavior disorder is an important marker of increased future risk for synucleinopathies such as Parkinson disease and dementia with Lewy bodies."},
-  {id:"fact048",category:"Neuroimmunology",difficulty:"Easy",fact:"Neuromyelitis optica spectrum disorder commonly affects the optic nerves and spinal cord and is associated with aquaporin-4 antibodies in many patients."},
-  {id:"fact049",category:"Neuroimmunology",difficulty:"Moderate",fact:"MOG-associated disease can present with optic neuritis, acute disseminated encephalomyelitis or myelitis and has clinical features that overlap with other inflammatory demyelinating disorders."},
-  {id:"fact050",category:"Neuroimmunology",difficulty:"Advanced",fact:"AQP4-IgG-positive neuromyelitis optica spectrum disorder is biologically distinct from multiple sclerosis and generally requires a different long-term immunotherapy strategy."}
+  {
+    "id": "fact001",
+    "topic": "Leukoencephalopathies",
+    "difficulty": "Easy",
+    "prompt": "Which virus causes progressive multifocal leukoencephalopathy (PML)?",
+    "options": [
+      "JC virus",
+      "EBV",
+      "CMV",
+      "HSV-1"
+    ],
+    "answer": "JC virus",
+    "explanation": "PML results from reactivation of JC polyomavirus in immunosuppressed individuals and produces multifocal demyelinating lesions, typically involving subcortical white matter."
+  },
+  {
+    "id": "fact002",
+    "topic": "Leukoencephalopathies",
+    "difficulty": "Moderate",
+    "prompt": "Which MRI pattern is most characteristic of PML?",
+    "options": [
+      "Symmetric periventricular lesions with Dawson fingers",
+      "Asymmetric T2/FLAIR hyperintense subcortical white-matter lesions without mass effect",
+      "Bilateral basal-ganglia lesions with marked enhancement",
+      "Isolated cerebellar atrophy"
+    ],
+    "answer": "Asymmetric T2/FLAIR hyperintense subcortical white-matter lesions without mass effect",
+    "explanation": "PML typically produces asymmetric, multifocal T2/FLAIR hyperintense white-matter lesions, often involving juxtacortical/subcortical regions, with relatively little mass effect."
+  },
+  {
+    "id": "fact003",
+    "topic": "Leukoencephalopathies",
+    "difficulty": "Easy",
+    "prompt": "Which genetic abnormality is classically responsible for CADASIL?",
+    "options": [
+      "NOTCH3 mutation",
+      "HTT CAG expansion",
+      "FXN GAA expansion",
+      "ATP7B mutation"
+    ],
+    "answer": "NOTCH3 mutation",
+    "explanation": "CADASIL is an autosomal-dominant small-vessel disease caused by NOTCH3 variants, classically associated with migraine with aura, recurrent subcortical ischemic events, cognitive decline and psychiatric manifestations."
+  },
+  {
+    "id": "fact004",
+    "topic": "Leukoencephalopathies",
+    "difficulty": "Moderate",
+    "prompt": "Which MRI finding strongly suggests CADASIL?",
+    "options": [
+      "Isolated hippocampal atrophy",
+      "Anterior temporal pole and external capsule white-matter lesions",
+      "Predominant occipital cortical atrophy",
+      "Bilateral optic-nerve enhancement"
+    ],
+    "answer": "Anterior temporal pole and external capsule white-matter lesions",
+    "explanation": "White-matter hyperintensities involving the anterior temporal poles and external capsules are characteristic imaging clues for CADASIL."
+  },
+  {
+    "id": "fact005",
+    "topic": "Leukoencephalopathies",
+    "difficulty": "Easy",
+    "prompt": "Which enzyme deficiency causes metachromatic leukodystrophy?",
+    "options": [
+      "Arylsulfatase A",
+      "Hexosaminidase A",
+      "Galactocerebrosidase",
+      "Adrenoleukodystrophy protein"
+    ],
+    "answer": "Arylsulfatase A",
+    "explanation": "Metachromatic leukodystrophy is an autosomal-recessive lysosomal storage disorder caused by arylsulfatase A deficiency, resulting in sulfatide accumulation and progressive demyelination."
+  },
+  {
+    "id": "fact006",
+    "topic": "Leukoencephalopathies",
+    "difficulty": "Moderate",
+    "prompt": "Which abnormality is characteristic of X-linked adrenoleukodystrophy?",
+    "options": [
+      "Accumulation of very-long-chain fatty acids",
+      "Accumulation of copper",
+      "Accumulation of GM2 ganglioside",
+      "Accumulation of α-synuclein"
+    ],
+    "answer": "Accumulation of very-long-chain fatty acids",
+    "explanation": "X-linked adrenoleukodystrophy is caused by ABCD1-related peroxisomal dysfunction, resulting in accumulation of very-long-chain fatty acids (VLCFAs)."
+  },
+  {
+    "id": "fact007",
+    "topic": "Leukoencephalopathies",
+    "difficulty": "Advanced",
+    "prompt": "Which inherited disorder should be strongly considered in an adult with progressive cognitive decline, psychiatric symptoms, parkinsonism and characteristic white-matter disease?",
+    "options": [
+      "CSF1R-related adult-onset leukoencephalopathy (ALSP)",
+      "Duchenne muscular dystrophy",
+      "Myasthenia gravis",
+      "Wilson disease"
+    ],
+    "answer": "CSF1R-related adult-onset leukoencephalopathy (ALSP)",
+    "explanation": "CSF1R-related leukoencephalopathy (ALSP) is an important cause of progressive adult-onset white-matter disease, often featuring cognitive/psychiatric changes, gait dysfunction and parkinsonism."
+  },
+  {
+    "id": "fact008",
+    "topic": "Hereditary neurodegenerative diseases",
+    "difficulty": "Easy",
+    "prompt": "Which inheritance pattern and mutation characterize Huntington disease?",
+    "options": [
+      "Autosomal dominant — CAG repeat expansion",
+      "Autosomal recessive — GAA repeat expansion",
+      "X-linked recessive — CGG expansion",
+      "Mitochondrial — mtDNA deletion"
+    ],
+    "answer": "Autosomal dominant — CAG repeat expansion",
+    "explanation": "Huntington disease is autosomal dominant and results from a CAG trinucleotide repeat expansion in HTT."
+  },
+  {
+    "id": "fact009",
+    "topic": "Hereditary neurodegenerative diseases",
+    "difficulty": "Moderate",
+    "prompt": "In Huntington disease, anticipation is particularly associated with transmission through which parent?",
+    "options": [
+      "Mother",
+      "Father",
+      "Both equally",
+      "Neither"
+    ],
+    "answer": "Father",
+    "explanation": "Expansion of the HTT CAG repeat is particularly prone to occur during paternal transmission, producing genetic anticipation."
+  },
+  {
+    "id": "fact010",
+    "topic": "Hereditary neurodegenerative diseases",
+    "difficulty": "Easy",
+    "prompt": "Which repeat expansion is characteristic of Friedreich ataxia?",
+    "options": [
+      "CAG",
+      "GAA",
+      "CTG",
+      "CGG"
+    ],
+    "answer": "GAA",
+    "explanation": "Friedreich ataxia is usually caused by a GAA expansion in the FXN gene, leading to reduced frataxin and mitochondrial dysfunction."
+  },
+  {
+    "id": "fact011",
+    "topic": "Hereditary neurodegenerative diseases",
+    "difficulty": "Easy",
+    "prompt": "Which gene is mutated in Wilson disease?",
+    "options": [
+      "ATP7B",
+      "ATP7A",
+      "HTT",
+      "PARK2"
+    ],
+    "answer": "ATP7B",
+    "explanation": "Wilson disease is an autosomal-recessive copper metabolism disorder caused by ATP7B dysfunction, resulting in impaired biliary copper excretion."
+  },
+  {
+    "id": "fact012",
+    "topic": "Hereditary neurodegenerative diseases",
+    "difficulty": "Moderate",
+    "prompt": "Which combination is particularly suggestive of neurological Wilson disease?",
+    "options": [
+      "Parkinsonism/dystonia + hepatic disease + Kayser–Fleischer rings",
+      "Pure peripheral neuropathy + retinal degeneration",
+      "Isolated lower motor neuron disease",
+      "Pure cerebellar ataxia without systemic findings"
+    ],
+    "answer": "Parkinsonism/dystonia + hepatic disease + Kayser–Fleischer rings",
+    "explanation": "Wilson disease may produce dystonia, tremor, parkinsonism, dysarthria and psychiatric symptoms, together with hepatic involvement and Kayser–Fleischer rings."
+  },
+  {
+    "id": "fact013",
+    "topic": "Hereditary neurodegenerative diseases",
+    "difficulty": "Advanced",
+    "prompt": "Which disorder is caused by a CAG repeat expansion in the ATN1 gene?",
+    "options": [
+      "Dentatorubral-pallidoluysian atrophy (DRPLA)",
+      "Huntington disease",
+      "Friedreich ataxia",
+      "Spinocerebellar ataxia type 6"
+    ],
+    "answer": "Dentatorubral-pallidoluysian atrophy (DRPLA)",
+    "explanation": "DRPLA is an autosomal-dominant CAG-repeat disorder caused by expansion in ATN1 and can produce ataxia, myoclonus, epilepsy and cognitive decline."
+  },
+  {
+    "id": "fact014",
+    "topic": "Spinocerebellar ataxias",
+    "difficulty": "Easy",
+    "prompt": "SCA3 is also known as:",
+    "options": [
+      "Machado–Joseph disease",
+      "Ramsay Hunt syndrome",
+      "Louis-Bar syndrome",
+      "Shy-Drager syndrome"
+    ],
+    "answer": "Machado–Joseph disease",
+    "explanation": "SCA3/Machado–Joseph disease is one of the common autosomal-dominant SCAs and is caused by a CAG repeat expansion in ATXN3."
+  },
+  {
+    "id": "fact015",
+    "topic": "Spinocerebellar ataxias",
+    "difficulty": "Easy",
+    "prompt": "Which repeat expansion causes SCA1?",
+    "options": [
+      "CAG expansion in ATXN1",
+      "GAA expansion in FXN",
+      "CTG expansion in DMPK",
+      "CAG expansion in HTT"
+    ],
+    "answer": "CAG expansion in ATXN1",
+    "explanation": "SCA1 is caused by a CAG repeat expansion in ATXN1 and commonly produces progressive cerebellar ataxia with pyramidal and other extracerebellar features."
+  },
+  {
+    "id": "fact016",
+    "topic": "Spinocerebellar ataxias",
+    "difficulty": "Moderate",
+    "prompt": "Which clinical feature is particularly useful as a clue to SCA2?",
+    "options": [
+      "Slow saccadic eye movements",
+      "Retinitis pigmentosa",
+      "Severe sensory neuropathy as the only manifestation",
+      "Isolated dystonia"
+    ],
+    "answer": "Slow saccadic eye movements",
+    "explanation": "Slow saccades are a classic clinical clue in SCA2, which is caused by a CAG repeat expansion in ATXN2."
+  },
+  {
+    "id": "fact017",
+    "topic": "Spinocerebellar ataxias",
+    "difficulty": "Moderate",
+    "prompt": "Which statement best describes SCA6?",
+    "options": [
+      "It is commonly a relatively pure cerebellar ataxia with later onset",
+      "It is primarily a retinal degeneration syndrome",
+      "It is an X-linked leukodystrophy",
+      "It is caused by a GAA expansion in FXN"
+    ],
+    "answer": "It is commonly a relatively pure cerebellar ataxia with later onset",
+    "explanation": "SCA6, caused by a CAG expansion in CACNA1A, often presents with a relatively pure, slowly progressive cerebellar ataxia and tends to have later onset than several other SCAs."
+  },
+  {
+    "id": "fact018",
+    "topic": "Spinocerebellar ataxias",
+    "difficulty": "Easy",
+    "prompt": "Which feature is particularly characteristic of SCA7?",
+    "options": [
+      "Retinal degeneration with progressive visual loss",
+      "Severe peripheral neuropathy without ataxia",
+      "Isolated lower motor neuron weakness",
+      "Optic neuritis"
+    ],
+    "answer": "Retinal degeneration with progressive visual loss",
+    "explanation": "SCA7 is notable for cone-rod dystrophy/retinal degeneration, making progressive visual impairment an important distinguishing feature."
+  },
+  {
+    "id": "fact019",
+    "topic": "Spinocerebellar ataxias",
+    "difficulty": "Moderate",
+    "prompt": "Which combination can occur in SCA3/Machado–Joseph disease?",
+    "options": [
+      "Ataxia, pyramidal signs, dystonia and parkinsonism",
+      "Only cerebellar signs",
+      "Only peripheral neuropathy",
+      "Only cognitive impairment"
+    ],
+    "answer": "Ataxia, pyramidal signs, dystonia and parkinsonism",
+    "explanation": "SCA3 has a broad phenotype and may include cerebellar ataxia, pyramidal signs, dystonia, parkinsonism, neuropathy and other extracerebellar manifestations."
+  },
+  {
+    "id": "fact020",
+    "topic": "Spinocerebellar ataxias",
+    "difficulty": "Easy",
+    "prompt": "Most of the classic spinocerebellar ataxias (SCAs) such as SCA1, SCA2, SCA3, SCA6 and SCA7 are inherited as:",
+    "options": [
+      "Autosomal dominant",
+      "Autosomal recessive",
+      "X-linked recessive",
+      "Mitochondrial"
+    ],
+    "answer": "Autosomal dominant",
+    "explanation": "The classic SCAs are predominantly autosomal-dominant inherited disorders, although hereditary ataxia as a whole includes many autosomal-recessive, X-linked and mitochondrial disorders."
+  }
 ];
