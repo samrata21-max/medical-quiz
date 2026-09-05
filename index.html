@@ -32,7 +32,11 @@
   <div id="quizLayout">
     <section id="questionColumn">
       <h2 id="subject"></h2>
-      <div id="questionHeaderRow"><strong id="questionNumber"></strong><div id="questionActions"><button type="button" id="flagButton">⚑&nbsp; Flag for review</button><button type="button" id="previousButton">←&nbsp; Previous</button><button type="button" id="nextButton">Next &nbsp;→</button></div></div>
+      <div id="questionHeaderRow"><strong id="questionNumber"></strong><div id="questionActions"><button type="button" id="imagesButton" aria-haspopup="dialog">🖼&nbsp; Images</button><button type="button" id="flagButton">⚑&nbsp; Flag for review</button><button type="button" id="previousButton">←&nbsp; Previous</button><button type="button" id="nextButton">Next &nbsp;→</button></div></div>
+      <div id="questionMetaRow">
+        <div id="questionExposureInfo" class="questionExposureInfo" aria-live="polite"></div>
+        <div id="bankStats" aria-live="polite"><span><strong id="bankCorrectCount">0</strong> Correct</span><span><strong id="bankIncorrectCount">0</strong> Incorrect</span></div>
+      </div>
       <p id="questionStem"><span id="question"></span></p>
       <div id="quizContainer">
         <div class="answerOption"><input type="radio" id="optionA" name="answer" value="A"><label for="optionA"><span class="optionTag">A</span><span class="optionText" id="labelAText"></span></label></div>
@@ -43,14 +47,6 @@
         <p id="result"></p><p id="explanation"></p>
       </div>
     </section>
-    <aside id="navigatorPanel">
-      <div id="navigatorHeader"><span>Questions</span><span id="navigatorRange"></span></div>
-      <nav id="questionNavigator" aria-label="Question navigator"></nav>
-      <button type="button" id="imagesButton" aria-haspopup="dialog">Images</button>
-      <div id="navigatorLegend" aria-label="Question status legend"><span><i class="legendDot current"></i>Current</span><span><i class="legendDot unanswered"></i>Unanswered</span><span><i class="legendDot correct"></i>Correct</span><span><i class="legendDot wrong"></i>Incorrect</span><span><i class="legendDot flagged"></i>Flagged</span></div>
-      <div id="bankStats" aria-live="polite"><span><strong id="bankCorrectCount">0</strong> Correct</span><span><strong id="bankIncorrectCount">0</strong> Incorrect</span></div>
-      <div id="questionExposureInfo" class="questionExposureInfo" aria-live="polite"></div>
-    </aside>
   </div>
   <section id="resultsSummary" aria-live="polite">
     <div class="resultsHeading">Test completed</div>

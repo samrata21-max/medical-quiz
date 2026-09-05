@@ -15,7 +15,7 @@
 .profileName{color:var(--ink);font-weight:600}.genderIcon{font-size:20px;color:var(--accent);display:flex}.subscribe{border:1px solid var(--accent);background:var(--panel);color:var(--accent);padding:7px 13px;border-radius:4px;cursor:pointer;font:500 13px var(--sans)}.subscribe:hover{background:var(--accent-soft)}.subscribe.subscribed{background:var(--accent-soft);color:var(--accent-dark);border-color:var(--accent)}.logout{border:1px solid var(--border);background:none;color:var(--ink-soft);padding:7px 13px;border-radius:4px;cursor:pointer}.logout:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .wave{height:22px;margin-top:14px;border-bottom:1px solid rgba(31,111,100,.28)}
 main{max-width:1000px;margin:0 auto;padding:65px 24px 80px;text-align:center}h1{font-family:var(--serif);font-size:34px;margin:0 0 8px}.welcome{color:var(--ink-soft);margin:0 0 45px}
-.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;text-align:left}.card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:28px 24px;min-height:190px;cursor:pointer;transition:.15s ease}.card:hover{border-color:var(--accent);box-shadow:0 5px 18px rgba(32,43,47,.06);transform:translateY(-2px)}.cardNumber{font-family:monospace;color:var(--accent);font-size:12px;margin-bottom:22px}.card h2{font-family:var(--serif);font-size:24px;margin:0 0 8px}.card p{color:var(--ink-soft);font-size:13px;line-height:1.6;margin:0}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;text-align:left}.card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:28px 24px;min-height:190px;cursor:pointer;transition:.15s ease}.card:hover{border-color:var(--accent);box-shadow:0 5px 18px rgba(32,43,47,.06);transform:translateY(-2px)}.cardNumber{font-family:monospace;color:var(--accent);font-size:12px;margin-bottom:22px}.card h2{font-family:var(--serif);font-size:24px;margin:0 0 8px}.card p{color:var(--ink-soft);font-size:13px;line-height:1.6;margin:0}.cardMeta{display:none;margin-top:14px;font-family:monospace;font-size:11px;color:var(--accent)}
 @media(max-width:720px){.headerRow{align-items:flex-start}.cards{grid-template-columns:1fr}main{padding-top:45px}.profile{flex-wrap:wrap;justify-content:flex-end}.brand{font-size:24px}}
 
 body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);height:34px;transform:translateX(-50%);pointer-events:none;opacity:.09;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 50' preserveAspectRatio='none'%3E%3Cpolyline points='0,25 300,25 340,25 350,10 362,40 374,25 405,25 430,25 442,18 450,32 458,25 900,25' fill='none' stroke='%231F6F64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}header,main{position:relative;z-index:1}.genderIcon svg,.gender svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -39,7 +39,7 @@ body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);
   <p class="welcome" id="welcomeText">Choose what you would like to do.</p>
   <section class="cards" aria-label="Dashboard options">
     <article class="card" data-page="question-bank.html">
-      <div class="cardNumber">01</div><h2>Question Bank</h2><p>Browse and study the neurology MCQ question bank.</p>
+      <div class="cardNumber">01</div><h2>Question Bank</h2><p>Browse and study the neurology MCQ question bank.</p><span class="cardMeta" id="qbCoverageMeta"></span>
     </article>
     <article class="card" data-page="start-test.html">
       <div class="cardNumber">02</div><h2>Start Test</h2><p>Select a topic and begin a new test.</p>
@@ -53,6 +53,7 @@ body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);
   </section>
 </main>
 <script src="auth.js"></script>
+<script src="questions.js"></script>
 <script>
 const account = requireLogin();
 if (account) {
@@ -78,6 +79,20 @@ updateSubscriptionButton();
 document.querySelectorAll(".card").forEach(card => {
   card.addEventListener("click", () => window.location.href = card.dataset.page);
 });
+(function() {
+  if (!account || typeof questions === "undefined") return;
+  let stats = {};
+  try { stats = JSON.parse(localStorage.getItem("neurologyMCQQuestionStats_" + account.userId) || "{}"); } catch (e) {}
+  const total = questions.length;
+  if (!total) return;
+  const attempted = Object.keys(stats).filter(id => Number(stats[id] && stats[id].seen) > 0).length;
+  const pct = Math.round((attempted / total) * 100);
+  const meta = document.getElementById("qbCoverageMeta");
+  if (meta) {
+    meta.textContent = attempted + " of " + total + " questions attempted (" + pct + "%)";
+    meta.style.display = "block";
+  }
+})();
 </script>
 </body>
 </html>

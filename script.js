@@ -12,11 +12,9 @@ const modeRaw = localStorage.getItem("neurologyMCQSessionMode");
 const isQuestionBankMode = modeRaw === "questionBank";
 const STORAGE_KEY = isQuestionBankMode ? BANK_PROGRESS_KEY : TEST_PROGRESS_KEY;
 const QUESTION_BANK_VERSION = "v3";
-const questionsPerPage = 20;
 
 let quizQuestions = [];
 let currentQuestion = 0;
-let currentQuestionPage = 0;
 let score = 0;
 let answered = false;
 let userAnswers = [];
@@ -178,7 +176,6 @@ function handleQuestionTimeout() {
         radio.checked = false;
         radio.disabled = true;
     });
-    updateQuestionNavigator();
     saveProgress();
 
     const nextIndex = currentQuestion + 1;
@@ -228,9 +225,6 @@ function showQuizUI() {
     reviewContainer.innerHTML = "";
 
     quizContainer.style.display = "block";
-    document.getElementById("questionNavigator").style.display = "flex";
-    document.getElementById("navigatorLegend").style.display = "flex";
-    document.getElementById("navigatorHeader").style.display = "flex";
     document.getElementById("subject").style.display = "block";
     document.getElementById("progress").style.display = "block";
     document.getElementById("progressContainer").style.display = "block";
@@ -274,7 +268,6 @@ function startNewQuiz(category, requestedCount, difficulty, startedAt) {
 
     quizQuestions = shuffleArray(availableQuestions).slice(0, count);
     currentQuestion = 0;
-    currentQuestionPage = 0;
     score = 0;
     answered = false;
     userAnswers = [];
@@ -299,7 +292,6 @@ function startNewQuiz(category, requestedCount, difficulty, startedAt) {
         startTimer(startedAt || Date.now());
     }
     resetAnswerControls();
-    createQuestionNavigator();
     displayQuestion();
     updateImagesButton();
     saveProgress();
@@ -363,7 +355,6 @@ function restoreProgress() {
     } else {
         startTimer(progress.startedAt || Date.now());
     }
-    createQuestionNavigator();
     navigateToQuestion(restoredIndex);
 
     return true;
@@ -380,45 +371,6 @@ function resetAnswerControls() {
     });
     flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag for review";
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
-}
-
-function createQuestionNavigator() {
-    const navigator = document.getElementById("questionNavigator");
-    navigator.innerHTML = "";
-
-    const previousPageButton = document.createElement("button");
-    previousPageButton.type = "button";
-    previousPageButton.textContent = "‹";
-    previousPageButton.className = "navigatorArrow";
-    previousPageButton.id = "navigatorPrevious";
-    previousPageButton.setAttribute("aria-label", "Previous questions");
-
-    const questionNumbers = document.createElement("div");
-    questionNumbers.id = "questionNumbers";
-
-    const nextPageButton = document.createElement("button");
-    nextPageButton.type = "button";
-    nextPageButton.textContent = "›";
-    nextPageButton.className = "navigatorArrow";
-    nextPageButton.id = "navigatorNext";
-    nextPageButton.setAttribute("aria-label", "Next questions");
-
-    navigator.append(previousPageButton, questionNumbers, nextPageButton);
-
-    previousPageButton.addEventListener("click", function() {
-        if (currentQuestionPage > 0) {
-            currentQuestionPage--;
-            updateQuestionNavigator();
-        }
-    });
-    nextPageButton.addEventListener("click", function() {
-        const totalPages = Math.ceil(quizQuestions.length / questionsPerPage);
-        if (currentQuestionPage < totalPages - 1) {
-            currentQuestionPage++;
-            updateQuestionNavigator();
-        }
-    });
-    updateQuestionNavigator();
 }
 
 function navigateToQuestion(index) {
@@ -445,44 +397,7 @@ function navigateToQuestion(index) {
     saveProgress();
 }
 
-function updateQuestionNavigator() {
-    const questionNumbers = document.getElementById("questionNumbers");
-    if (!questionNumbers) return;
-    questionNumbers.innerHTML = "";
-
-    const startIndex = currentQuestionPage * questionsPerPage;
-    const endIndex = Math.min(startIndex + questionsPerPage, quizQuestions.length);
-
-    for (let i = startIndex; i < endIndex; i++) {
-        const navButton = document.createElement("button");
-        navButton.type = "button";
-        navButton.textContent = i + 1;
-        navButton.className = "questionNumberButton";
-        navButton.setAttribute("aria-label", "Go to question " + (i + 1));
-
-        if (i === currentQuestion) navButton.classList.add("currentQuestion");
-        else if (userAnswers[i] !== undefined) {
-            navButton.classList.add(userAnswers[i] === quizQuestions[i].correctAnswer ? "correctQuestion" : "wrongQuestion");
-        }
-        if (flaggedQuestions[i]) navButton.classList.add("flaggedQuestion");
-        if (getQuestionImages(quizQuestions[i]).length) navButton.classList.add("hasImages");
-
-        navButton.addEventListener("click", function() { navigateToQuestion(i); });
-        questionNumbers.appendChild(navButton);
-    }
-
-    const totalPages = Math.ceil(quizQuestions.length / questionsPerPage);
-    const previousPageButton = document.getElementById("navigatorPrevious");
-    const nextPageButton = document.getElementById("navigatorNext");
-    if (previousPageButton) previousPageButton.disabled = currentQuestionPage === 0;
-    if (nextPageButton) nextPageButton.disabled = currentQuestionPage >= totalPages - 1;
-
-    const range = document.getElementById("navigatorRange");
-    if (range && quizQuestions.length) range.textContent = (startIndex + 1) + "–" + endIndex + " of " + quizQuestions.length;
-}
-
 function displayQuestion() {
-    currentQuestionPage = Math.floor(currentQuestion / questionsPerPage);
     document.getElementById("progress").textContent = "Question " + (currentQuestion + 1) + " of " + quizQuestions.length;
     document.getElementById("progressBar").style.width = (((currentQuestion + 1) / quizQuestions.length) * 100) + "%";
     document.getElementById("questionNumber").textContent = "Question " + (currentQuestion + 1) + ":";
@@ -496,7 +411,6 @@ function displayQuestion() {
     previousButton.disabled = currentQuestion === 0;
     flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag for review";
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
-    updateQuestionNavigator();
     updateImagesButton();
     if (isQuestionBankMode) {
         updateQuestionBankStats();
@@ -607,7 +521,6 @@ flagButton.addEventListener("click", function() {
     flaggedQuestions[currentQuestion] = !flaggedQuestions[currentQuestion];
     flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag for review";
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
-    updateQuestionNavigator();
     saveProgress();
 });
 
@@ -631,7 +544,6 @@ submitButton.addEventListener("click", function() {
     answered = true;
     if (!isQuestionBankMode) stopQuestionTimer();
     showAnswerFeedback(selectedAnswer);
-    updateQuestionNavigator();
     document.querySelectorAll('input[name="answer"]').forEach(function(radio) { radio.disabled = true; });
 
     const isCorrect = selectedAnswer.value === quizQuestions[currentQuestion].correctAnswer;
@@ -767,9 +679,6 @@ function finishTestNow() {
     document.getElementById("subject").style.display = "none";
     document.getElementById("progress").style.display = "none";
     document.getElementById("progressContainer").style.display = "none";
-    document.getElementById("questionNavigator").style.display = "none";
-    document.getElementById("navigatorHeader").style.display = "none";
-    document.getElementById("navigatorLegend").style.display = "none";
     document.getElementById("questionNumber").style.display = "none";
     document.getElementById("question").style.display = "none";
     document.getElementById("questionActions").style.display = "none";
@@ -800,6 +709,23 @@ function buildReview() {
     heading.innerHTML = "<div><h2>Review answers</h2><p>Use the question numbers or keyboard arrow keys to move through the review.</p></div>";
     reviewContainer.appendChild(heading);
 
+    const navPanel = document.createElement("div");
+    navPanel.className = "reviewNavigatorPanel";
+
+    const navToggle = document.createElement("button");
+    navToggle.type = "button";
+    navToggle.className = "reviewNavigatorToggle";
+    navToggle.setAttribute("aria-expanded", "false");
+    navToggle.innerHTML = '<span>Questions</span><span class="reviewNavigatorCount">' + quizQuestions.length + '</span><span class="reviewNavigatorToggleIcon" aria-hidden="true">▾</span>';
+    navToggle.addEventListener("click", function() {
+        const isOpen = navPanel.classList.toggle("open");
+        navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+    navPanel.appendChild(navToggle);
+
+    const navBody = document.createElement("div");
+    navBody.className = "reviewNavigatorBody";
+
     const nav = document.createElement("div");
     nav.className = "reviewNavigator";
     nav.setAttribute("aria-label", "Review question status");
@@ -811,10 +737,12 @@ function buildReview() {
         const status = userAnswers[i] === undefined ? "unanswered" : (userAnswers[i] === q.correctAnswer ? "correct" : "incorrect");
         b.classList.add(status);
         b.setAttribute("aria-label", "Question " + (i + 1) + ": " + status);
-        b.addEventListener("click", function() { showReviewQuestion(i); });
+        b.addEventListener("click", function() { showReviewQuestion(i); navPanel.classList.remove("open"); navToggle.setAttribute("aria-expanded", "false"); });
         nav.appendChild(b);
     });
-    reviewContainer.appendChild(nav);
+    navBody.appendChild(nav);
+    navPanel.appendChild(navBody);
+    reviewContainer.appendChild(navPanel);
 
     const card = document.createElement("article");
     card.id = "reviewCard";
@@ -938,6 +866,7 @@ function renderCurrentImage() {
 }
 
 imagesButton.addEventListener("click", function() { openImagesForQuestion(currentQuestion); });
+
 document.getElementById("closeImageButton").addEventListener("click", function() { imageModal.style.display = "none"; });
 document.getElementById("previousImageButton").addEventListener("click", function() { if (currentImageIndex > 0) { currentImageIndex--; renderCurrentImage(); } });
 document.getElementById("nextImageButton").addEventListener("click", function() { if (currentImageIndex < imageItems.length - 1) { currentImageIndex++; renderCurrentImage(); } });
