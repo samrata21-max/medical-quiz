@@ -51,6 +51,8 @@ const finishButton = document.getElementById("finishButton");
 const quizContainer = document.getElementById("quizContainer");
 const flagButton = document.getElementById("flagButton");
 const submitButton = document.getElementById("submitButton");
+const previousInlineButton = document.getElementById("previousInlineButton");
+const nextInlineButton = document.getElementById("nextInlineButton");
 const result = document.getElementById("result");
 const explanation = document.getElementById("explanation");
 const scoreDisplay = document.getElementById("score");
@@ -168,14 +170,14 @@ function getQuestionRemainingSeconds(index) {
 function updateQuestionTimer() {
     if (completedTest || !quizQuestions.length) return;
     if (userAnswers[currentQuestion] !== undefined || timedOutQuestions[currentQuestion]) {
-        if (timerDisplay) timerDisplay.textContent = "Time —";
+        if (timerDisplay) timerDisplay.textContent = "—";
         stopQuestionTimer();
         return;
     }
 
     ensureQuestionDeadline(currentQuestion);
     const remaining = getQuestionRemainingSeconds(currentQuestion);
-    if (timerDisplay) timerDisplay.textContent = "Time left " + formatTime(remaining);
+    if (timerDisplay) timerDisplay.textContent = formatTime(remaining);
 
     if (remaining <= 0) {
         handleQuestionTimeout();
@@ -260,30 +262,43 @@ function showQuizUI() {
 
     quizContainer.style.display = "block";
     document.getElementById("subject").style.display = "block";
-    document.getElementById("progress").style.display = "block";
-    document.getElementById("progressContainer").style.display = "block";
+    document.getElementById("progress").style.display = isQuestionBankMode ? "none" : "block";
+    document.getElementById("progressContainer").style.display = isQuestionBankMode ? "none" : "block";
     document.getElementById("questionNumber").style.display = "block";
     document.getElementById("question").style.display = "block";
     document.getElementById("questionActions").style.display = "flex";
-    scoreDisplay.style.display = "block";
+    scoreDisplay.style.display = isQuestionBankMode ? "none" : "block";
     finishButton.style.display = "inline-flex";
     result.style.display = isQuestionBankMode || isReviewMistakesMode ? "block" : "none";
     explanation.style.display = isQuestionBankMode || isReviewMistakesMode ? "block" : "none";
     if (dashboardButton) dashboardButton.style.display = "none";
     if (timerDisplay) timerDisplay.style.display = isQuestionBankMode ? "none" : "inline-flex";
-    const bankStats = document.getElementById("bankStats");
+    const bankProgressRow = document.getElementById("bankProgressRow");
     const exposureInfo = document.getElementById("questionExposureInfo");
-    if (bankStats) bankStats.style.display = isQuestionBankMode ? "flex" : "none";
+    if (bankProgressRow) bankProgressRow.style.display = isQuestionBankMode ? "flex" : "none";
     if (exposureInfo) exposureInfo.style.display = isQuestionBankMode ? "block" : "none";
     if (isQuestionBankMode) {
-        finishButton.textContent = "End of session";
+        finishButton.style.display = "none";
         const confirmButton = document.getElementById("confirmFinishButton");
         const modalTitle = document.querySelector("#finishModalBox h2");
         if (modalTitle) modalTitle.textContent = "End session?";
         if (confirmButton) confirmButton.textContent = "End of session";
     } else if (isReviewMistakesMode) {
+        document.getElementById("progress").style.display = "none";
+        document.getElementById("progressContainer").style.display = "none";
+        scoreDisplay.style.display = "none";
+        finishButton.style.display = "none";
+        finishButton.textContent = "End of review";
+        const confirmButton = document.getElementById("confirmFinishButton");
+        const modalTitle = document.querySelector("#finishModalBox h2");
+        if (modalTitle) modalTitle.textContent = "End review?";
+        if (confirmButton) confirmButton.textContent = "End of review";
         if (timerDisplay) timerDisplay.style.display = "none";
     } else {
+        document.getElementById("progress").style.display = "none";
+        document.getElementById("progressContainer").style.display = "none";
+        scoreDisplay.style.display = "none";
+        finishButton.style.display = "none";
         finishButton.textContent = "Finish test";
         const confirmButton = document.getElementById("confirmFinishButton");
         const modalTitle = document.querySelector("#finishModalBox h2");
@@ -320,7 +335,7 @@ function startNewQuiz(category, requestedCount, difficulty, startedAt) {
     if (isQuestionBankMode) window._questionBankSeenThisSession = new Set();
 
     scoreDisplay.textContent = "Score: 0";
-    if (timerDisplay) timerDisplay.textContent = "Time left 00:55";
+    if (timerDisplay) timerDisplay.textContent = "00:55";
 
     if (isQuestionBankMode || isReviewMistakesMode) {
         testStartedAt = startedAt || Date.now();
@@ -407,7 +422,7 @@ function resetAnswerControls() {
             label.classList.remove("correctAnswer", "wrongAnswer");
         }
     });
-    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag for review";
+    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag";
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
 }
 
@@ -438,6 +453,10 @@ function navigateToQuestion(index) {
 function displayQuestion() {
     document.getElementById("progress").textContent = "Question " + (currentQuestion + 1) + " of " + quizQuestions.length;
     document.getElementById("progressBar").style.width = (((currentQuestion + 1) / quizQuestions.length) * 100) + "%";
+    const bankQuestionProgress = document.getElementById("bankQuestionProgress");
+    const bankProgressBar = document.getElementById("bankProgressBar");
+    if (bankQuestionProgress) bankQuestionProgress.textContent = (currentQuestion + 1) + " of " + quizQuestions.length;
+    if (bankProgressBar) bankProgressBar.style.width = (((currentQuestion + 1) / quizQuestions.length) * 100) + "%";
     document.getElementById("questionNumber").textContent = "Question " + (currentQuestion + 1) + ":";
     document.getElementById("subject").textContent = question.subject || question.category || "Neurology";
     document.getElementById("question").textContent = question.questionText;
@@ -447,13 +466,13 @@ function displayQuestion() {
     document.getElementById("labelDText").textContent = question.optionD;
     nextButton.disabled = currentQuestion === quizQuestions.length - 1;
     previousButton.disabled = currentQuestion === 0;
-    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag for review";
+    if (previousInlineButton) previousInlineButton.disabled = previousButton.disabled;
+    if (nextInlineButton) nextInlineButton.disabled = nextButton.disabled;
+    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag";
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
     updateImagesButton();
     if (isQuestionBankMode) {
-        updateQuestionBankStats();
         recordQuestionExposure(question);
-        updateQuestionBankStats();
         updateExposureInfo();
     } else if (isReviewMistakesMode) {
         if (timerDisplay) timerDisplay.style.display = "none";
@@ -490,19 +509,6 @@ function recordQuestionExposure(q) {
     stats[q.id] = entry;
     saveQuestionStats(stats);
     window._questionBankSeenThisSession.add(q.id);
-}
-
-function updateQuestionBankStats() {
-    const bankStats = document.getElementById("bankStats");
-    if (!bankStats || !isQuestionBankMode) return;
-    let correct = 0, incorrect = 0;
-    quizQuestions.forEach(function(q, i) {
-        if (userAnswers[i] === undefined) return;
-        if (userAnswers[i] === q.correctAnswer) correct++;
-        else incorrect++;
-    });
-    document.getElementById("bankCorrectCount").textContent = correct;
-    document.getElementById("bankIncorrectCount").textContent = incorrect;
 }
 
 function recordAnsweredQuestion(q, isCorrect) {
@@ -575,7 +581,7 @@ function showAnswerFeedback(selectedAnswer) {
 
 flagButton.addEventListener("click", function() {
     flaggedQuestions[currentQuestion] = !flaggedQuestions[currentQuestion];
-    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag for review";
+    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag";
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
     saveProgress();
 });
@@ -586,6 +592,14 @@ previousButton.addEventListener("click", function() {
 
 nextButton.addEventListener("click", function() {
     if (currentQuestion < quizQuestions.length - 1) navigateToQuestion(currentQuestion + 1);
+});
+
+if (previousInlineButton) previousInlineButton.addEventListener("click", function() {
+    previousButton.click();
+});
+
+if (nextInlineButton) nextInlineButton.addEventListener("click", function() {
+    nextButton.click();
 });
 
 submitButton.addEventListener("click", function() {
@@ -616,7 +630,6 @@ submitButton.addEventListener("click", function() {
     recordAnsweredQuestion(quizQuestions[currentQuestion], isCorrect);
 
     if (isQuestionBankMode) {
-        updateQuestionBankStats();
         updateExposureInfo();
         saveProgress();
         return;
@@ -738,11 +751,15 @@ function finishTestNow() {
     result.style.display = "none";
     explanation.style.display = "none";
     if (timerDisplay) timerDisplay.style.display = "none";
+    const bankProgressRow = document.getElementById("bankProgressRow");
+    if (bankProgressRow) bankProgressRow.style.display = "none";
     if (dashboardButton) dashboardButton.style.display = "inline-flex";
 
     if (!isQuestionBankMode && !isReviewMistakesMode) saveTestSession(stats);
     clearSavedProgress();
     localStorage.removeItem("neurologyMCQSessionMode");
+    document.body.classList.add("session-summary");
+    if (typeof updateActiveNavigation === "function") updateActiveNavigation();
 }
 
 document.getElementById("confirmFinishButton").addEventListener("click", finishTestNow);

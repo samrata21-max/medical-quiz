@@ -6,6 +6,27 @@ const togglePassword = document.getElementById("togglePassword");
 const loginMessage = document.getElementById("loginMessage");
 const registerButton = document.getElementById("registerButton");
 
+function normalizeEmail(value) {
+    return String(value || "").trim().toLowerCase();
+}
+
+function normalizePhone(value) {
+    return String(value || "").replace(/\D/g, "");
+}
+
+function matchesLoginIdentifier(account, identifier) {
+    const entered = String(identifier || "").trim();
+    if (account.userId && account.userId.toLowerCase() === entered.toLowerCase()) return true;
+    if (account.email && normalizeEmail(account.email) === normalizeEmail(entered)) return true;
+
+    const enteredPhone = normalizePhone(entered);
+    const accountPhone = normalizePhone(account.mobile);
+    const countryCode = normalizePhone(account.countryCode);
+    if (!enteredPhone || !accountPhone) return false;
+    return enteredPhone === accountPhone ||
+        (countryCode && enteredPhone === countryCode + accountPhone);
+}
+
 togglePassword.addEventListener("click", function () {
     const isPassword = passwordInput.type === "password";
     passwordInput.type = isPassword ? "text" : "password";
@@ -57,9 +78,8 @@ loginForm.addEventListener("submit", function (event) {
         return;
     }
 
-    if (account.userId.toLowerCase() !== userId.toLowerCase() ||
-        account.passwordHash !== hashedPassword) {
-        loginMessage.textContent = "Incorrect User ID or password.";
+    if (!matchesLoginIdentifier(account, userId) || account.passwordHash !== hashedPassword) {
+        loginMessage.textContent = "Incorrect username, email, mobile number or password.";
         passwordInput.focus();
         return;
     }

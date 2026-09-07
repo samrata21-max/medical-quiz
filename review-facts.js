@@ -85,6 +85,14 @@ function updateAllTimeSummary() {
     start.textContent = remainingFacts().length ? "Start Review" : "All facts Done & Dusted";
 }
 
+function setReviewState(active) {
+    document.body.classList.toggle("reviewing-facts", active);
+    if (dashboardButton) dashboardButton.style.display = active ? "none" : "inline-block";
+    const logoutButton = document.getElementById("logoutButton");
+    if (logoutButton) logoutButton.style.display = active || document.body.classList.contains("facts-summary") ? "none" : "inline-block";
+    if (typeof updateActiveNavigation === "function") updateActiveNavigation();
+}
+
 function shuffle(items) {
     const a = items.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -245,10 +253,7 @@ function startSession() {
     homeView.style.display = "none";
     completionEl.style.display = "none";
     sessionEl.style.display = "grid";
-    document.getElementById("logoutButton").style.display = "none";
-    if (dashboardButton) dashboardButton.style.display = "none";
-    // Review Facts only: hide the header wave and reduce question text size while reviewing.
-    document.body.classList.add("reviewing-facts");
+    setReviewState(true);
     renderFact();
 }
 
@@ -266,10 +271,8 @@ function finishSession(completedAll) {
     sessionEl.style.display = "none";
     homeView.style.display = "none";
     completionEl.style.display = "block";
-    document.getElementById("logoutButton").style.display = "inline-block";
-    if (dashboardButton) dashboardButton.style.display = "inline-block";
-    // Restore normal header/question styling after the review session ends.
-    document.body.classList.remove("reviewing-facts");
+    document.body.classList.add("facts-summary");
+    setReviewState(false);
 
     document.getElementById("completionReviewed").textContent = sessionSeen.size;
     document.getElementById("completionCorrect").textContent = sessionCorrectIds.size;
@@ -283,6 +286,10 @@ function finishSession(completedAll) {
     updateAllTimeSummary();
     window.scrollTo({top: 0, behavior: "smooth"});
 }
+
+window.endReviewFactsSession = function() {
+    finishSession(false);
+};
 
 if (dashboardButton) {
     dashboardButton.addEventListener("click", () => {
@@ -302,3 +309,4 @@ document.getElementById("dashboardAfter").addEventListener("click", () => {
 document.getElementById("logoutButton").addEventListener("click", logout);
 
 updateAllTimeSummary();
+setReviewState(false);

@@ -43,6 +43,20 @@ body {
     padding: 28px 24px 0;
 }
 
+#bankProgressRow {
+    display: none;
+    max-width: 1100px;
+    margin: 14px auto 0;
+    padding: 0 24px 12px;
+    align-items: center;
+    gap: 14px;
+    color: var(--ink-soft);
+    font: 12px var(--mono);
+}
+#bankQuestionProgress { flex: 0 0 auto; white-space: nowrap; }
+#bankProgressContainer { flex: 1 1 auto; min-width: 80px; width: auto; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+#bankProgressBar { width: 0; height: 100%; background: var(--accent); transition: width .2s ease; }
+
 #questionStem,
 #quizContainer {
     max-width: 720px;
@@ -76,20 +90,6 @@ body {
 #score { color: var(--accent); }
 
 #timerDisplay { color: var(--ink-soft); white-space: nowrap; }
-
-#waveform {
-    width: 100%;
-    height: 22px;
-    margin-top: 14px;
-    display: block;
-}
-
-#waveform path {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 1.4;
-    opacity: 0.55;
-}
 
 #progressContainer {
     display: none;
@@ -189,6 +189,14 @@ body {
     color: var(--accent);
     font-weight: 500;
     white-space: nowrap;
+}
+
+#questionHeaderRow .questionExposureInfo {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #questionActions {
@@ -303,8 +311,16 @@ body {
 /* ---------- Actions ---------- */
 
 #primaryActionRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin: 22px 0 6px;
 }
+
+#inlineQuestionActions { display: flex; gap: 8px; margin-left: auto; }
+#inlineQuestionActions button { height: 44px; border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 3px; padding: 12px 14px; font-size: 15px; }
+#inlineQuestionActions button:hover:not(:disabled) { border-color: #185a51; background: #185a51; }
+#inlineQuestionActions button:disabled { opacity: .45; cursor: not-allowed; }
 
 button {
     font-family: var(--sans);
@@ -315,6 +331,7 @@ button {
     background: var(--accent);
     color: #fff;
     border: none;
+    height: 44px;
     padding: 12px 22px;
     font-size: 15px;
     font-weight: 500;
@@ -581,16 +598,26 @@ button {
     }
 
     #questionHeaderRow {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
     }
 
     #questionActions {
-        width: 100%;
-        margin-left: 0;
-        justify-content: flex-start;
+        width: auto;
+        margin-left: auto;
+        justify-content: flex-end;
+        gap: 6px;
+        flex-wrap: nowrap;
     }
+
+    #questionActions button {
+        font-size: 11px;
+    }
+
+    #primaryActionRow { gap: 8px; }
+    #inlineQuestionActions { gap: 5px; }
+    #inlineQuestionActions button { padding: 12px 8px; font-size: 15px; }
 
     #quizControls {
         justify-content: space-between;
@@ -649,22 +676,9 @@ button {
 @media (max-width: 700px) {
     #headerStats { width: 100%; flex-wrap: wrap; justify-content: flex-end; }
     #profileArea { order: -1; }
+    #bankProgressRow { padding-left: 16px; padding-right: 16px; }
 }
 
-/* Medical identity for the MCQ engine */
-body::before {
-    content: "";
-    position: fixed;
-    left: 50%;
-    top: 10px;
-    width: min(1100px, 88vw);
-    height: 34px;
-    transform: translateX(-50%);
-    pointer-events: none;
-    opacity: .09;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 50' preserveAspectRatio='none'%3E%3Cpolyline points='0,25 300,25 340,25 350,10 362,40 374,25 405,25 430,25 442,18 450,32 458,25 900,25' fill='none' stroke='%231F6F64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;
-    z-index: 0;
-}
 header, main, .container { position: relative; z-index: 1; }
 
 /* ---------- Updated results, review, timer and image viewer ---------- */
@@ -889,24 +903,12 @@ header, main, .container { position: relative; z-index: 1; }
     #imageModal { padding:10px; }
     #imageModalBox { width:100%; height:92vh; padding:16px; }
     .reviewPager { flex-wrap:wrap; justify-content:center; }
-    #bankStats, .questionExposureInfo { font-size: 10px; padding: 5px 10px; }
+    .questionExposureInfo { font-size: 10px; padding: 5px 10px; }
+    #bankProgressRow { gap: 8px; font-size: 10px; }
+    #bankProgressContainer { min-width: 70px; }
 }
 
 /* ---------- Question Bank learning-session information ---------- */
-#bankStats {
-    display: none;
-    align-items: center;
-    gap: 12px;
-    padding: 6px 12px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: var(--panel);
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--ink-soft);
-}
-#bankStats span { display: inline-flex; align-items: baseline; gap: 5px; }
-#bankStats strong { font-size: 13px; color: var(--ink); }
 .questionExposureInfo {
     display: none;
     padding: 6px 12px;

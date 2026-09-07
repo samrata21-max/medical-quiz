@@ -220,23 +220,4 @@ body {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
-.ekgMotif {
-    position: fixed;
-    left: 50%;
-    top: 18px;
-    width: min(900px, 86vw);
-    height: 42px;
-    transform: translateX(-50%);
-    opacity: .10;
-    pointer-events: none;
-    z-index: 0;
-}
-.ekgMotif svg { width: 100%; height: 100%; overflow: visible; }
-.ekgMotif polyline {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
 .loginCard { position: relative; z-index: 1; }

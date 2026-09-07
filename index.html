@@ -15,35 +15,32 @@
     <h1>Neurology MCQ</h1>
     <div id="headerStats">
       <div id="profileArea" aria-label="Signed-in user">
-        <button type="button" id="dashboardButton">Dashboard</button>
-        <span id="profileIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"></circle><path d="M5.5 21c.7-4.2 2.9-6.5 6.5-6.5s5.8 2.3 6.5 6.5"></path></svg></span>
         <span id="profileName"></span>
       </div>
-      <span id="timerDisplay" aria-label="Elapsed time">Time 00:00</span>
+      <span id="timerDisplay" aria-label="Elapsed time">00:00</span>
       <span id="score"></span>
       <span id="progress"></span>
       <div id="progressContainer"><div id="progressBar"></div></div>
       <button type="button" id="finishButton">Finish test</button>
     </div>
   </div>
-  <svg id="waveform" viewBox="0 0 700 28" preserveAspectRatio="none" aria-hidden="true"><path d="M0,14 L60,14 L75,4 L90,24 L105,14 L160,14 L175,6 L190,22 L205,14 L260,14 L275,2 L290,26 L305,14 L360,14 L375,8 L390,20 L405,14 L460,14 L475,4 L490,24 L505,14 L560,14 L575,6 L590,22 L605,14 L660,14 L675,4 L690,24 L700,14" /></svg>
 </header>
+<div id="bankProgressRow" aria-label="Question Bank progress">
+  <span id="bankQuestionProgress">0 of 0</span>
+  <div id="bankProgressContainer" aria-hidden="true"><div id="bankProgressBar"></div></div>
+</div>
 <main id="quizMain">
   <div id="quizLayout">
     <section id="questionColumn">
       <h2 id="subject"></h2>
-      <div id="questionHeaderRow"><strong id="questionNumber"></strong><div id="questionActions"><button type="button" id="imagesButton" aria-haspopup="dialog">🖼&nbsp; Images</button><button type="button" id="flagButton">⚑&nbsp; Flag for review</button><button type="button" id="previousButton">←&nbsp; Previous</button><button type="button" id="nextButton">Next &nbsp;→</button></div></div>
-      <div id="questionMetaRow">
-        <div id="questionExposureInfo" class="questionExposureInfo" aria-live="polite"></div>
-        <div id="bankStats" aria-live="polite"><span><strong id="bankCorrectCount">0</strong> Correct</span><span><strong id="bankIncorrectCount">0</strong> Incorrect</span></div>
-      </div>
+      <div id="questionHeaderRow"><strong id="questionNumber"></strong><div id="questionExposureInfo" class="questionExposureInfo" aria-live="polite"></div><div id="questionActions"><button type="button" id="imagesButton" aria-haspopup="dialog">🖼&nbsp; Images</button><button type="button" id="flagButton">⚑&nbsp; Flag</button><button type="button" id="previousButton">←&nbsp; Previous</button><button type="button" id="nextButton">Next &nbsp;→</button></div></div>
       <p id="questionStem"><span id="question"></span></p>
       <div id="quizContainer">
         <div class="answerOption"><input type="radio" id="optionA" name="answer" value="A"><label for="optionA"><span class="optionTag">A</span><span class="optionText" id="labelAText"></span></label></div>
         <div class="answerOption"><input type="radio" id="optionB" name="answer" value="B"><label for="optionB"><span class="optionTag">B</span><span class="optionText" id="labelBText"></span></label></div>
         <div class="answerOption"><input type="radio" id="optionC" name="answer" value="C"><label for="optionC"><span class="optionTag">C</span><span class="optionText" id="labelCText"></span></label></div>
         <div class="answerOption"><input type="radio" id="optionD" name="answer" value="D"><label for="optionD"><span class="optionTag">D</span><span class="optionText" id="labelDText"></span></label></div>
-        <div id="primaryActionRow"><button type="button" id="submitButton">Submit answer</button></div>
+        <div id="primaryActionRow"><button type="button" id="submitButton">Submit answer</button><div id="inlineQuestionActions"><button type="button" id="previousInlineButton">Previous</button><button type="button" id="nextInlineButton">Next</button></div></div>
         <p id="result"></p><p id="explanation"></p>
       </div>
     </section>
