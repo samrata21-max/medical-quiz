@@ -7,17 +7,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
 <style>
-:root{--bg:#F6F5F0;--panel:#FFF;--ink:#202B2F;--ink-soft:#68777B;--border:#DFDBCF;--accent:#1F6F64;--accent-dark:#185A51;--accent-soft:#DCEAE7;--serif:"Source Serif 4",Georgia,serif;--sans:"IBM Plex Sans",-apple-system,"Segoe UI",sans-serif}
 *{box-sizing:border-box} body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans)}
 .header{max-width:1100px;margin:auto;padding:28px 24px 0}.headerRow{display:flex;justify-content:space-between;align-items:center;gap:20px}
 .brand{font-family:var(--serif);font-size:28px;font-weight:600}.profile{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:13px}
-.profileName{color:var(--ink);font-weight:600}.genderIcon{font-size:20px;color:var(--accent);display:flex}.logout{border:1px solid var(--border);background:none;color:var(--ink-soft);padding:7px 13px;border-radius:4px;cursor:pointer}.logout:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-main{max-width:1000px;margin:0 auto;padding:65px 24px 80px;text-align:center}h1{font-family:var(--serif);font-size:34px;margin:0 0 8px}.welcome{color:var(--ink-soft);margin:0 0 45px}
-.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;text-align:left}.card{background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:28px 24px;min-height:190px;cursor:pointer;transition:.15s ease}.card:hover{border-color:var(--accent);box-shadow:0 5px 18px rgba(32,43,47,.06);transform:translateY(-2px)}.card h2{font-family:var(--serif);font-size:24px;margin:0 0 8px}.card p{color:var(--ink-soft);font-size:13px;line-height:1.6;margin:0}.cardMeta{display:none;margin-top:14px;font-family:monospace;font-size:11px;color:var(--accent)}.performanceMeta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.performanceMeta strong{display:block;font:600 20px var(--serif);color:var(--ink)}.performanceMeta span{display:block;color:var(--ink-soft);font-size:11px;margin-top:2px}
+.profileName{color:var(--ink);font-weight:600}.genderIcon{font-size:20px;color:var(--accent);display:flex}.logout{border:1px solid var(--border);background:none;color:var(--ink-soft);padding:7px 13px;border-radius:10px;cursor:pointer;transition:.15s ease}.logout:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+main{max-width:1000px;margin:0 auto;padding:40px 24px 80px;text-align:center}h1{font-family:var(--serif);font-size:34px;margin:0 0 8px}.welcome{color:var(--ink-soft);margin:0 0 45px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;text-align:left}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:26px 24px;min-height:190px;cursor:pointer;transition:.18s ease;box-shadow:0 2px 10px rgba(16,25,51,.04);display:flex;flex-direction:column}
+.card:hover{border-color:transparent;box-shadow:0 14px 30px rgba(16,25,51,.10);transform:translateY(-3px)}
+.cardIcon{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.card[data-accent="blue"] .cardIcon{background:var(--blue-bg);color:var(--blue-fg)}
+.card[data-accent="mint"] .cardIcon{background:var(--mint-bg);color:var(--mint-fg)}
+.card[data-accent="rose"] .cardIcon{background:var(--rose-bg);color:var(--rose-fg)}
+.card[data-accent="amber"] .cardIcon{background:var(--amber-bg);color:var(--amber-fg)}
+.card[data-accent="teal"] .cardIcon{background:var(--teal-bg);color:var(--teal-fg)}
+.card[data-accent="violet"] .cardIcon{background:var(--violet-bg);color:var(--violet-fg)}
+.card[data-accent="steel"] .cardIcon{background:var(--steel-bg);color:var(--steel-fg)}
+.card h2{font-family:var(--serif);font-size:22px;margin:0 0 8px}.card p{color:var(--ink-soft);font-size:13px;line-height:1.6;margin:0}
+.cardMeta{display:none;margin-top:14px;font-family:monospace;font-size:11px;color:var(--accent)}
+.cardProgress{display:none;margin-top:12px;height:6px;border-radius:99px;background:var(--border);overflow:hidden}
+.cardProgressBar{height:100%;width:0%;border-radius:99px;background:var(--accent);transition:width .4s ease}
+.card[data-accent="mint"] .cardProgressBar{background:var(--mint-fg)}
+.card[data-accent="violet"] .cardProgressBar{background:var(--violet-fg)}
+.performanceMeta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.performanceMeta strong{display:block;font:600 20px var(--serif);color:var(--ink)}.performanceMeta span{display:block;color:var(--ink-soft);font-size:11px;margin-top:2px}
 @media(max-width:720px){.headerRow{align-items:flex-start}.cards{grid-template-columns:1fr}main{padding-top:45px}.profile{flex-wrap:wrap;justify-content:flex-end}.brand{font-size:24px}}
 
-body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);height:34px;transform:translateX(-50%);pointer-events:none;opacity:.09;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 50' preserveAspectRatio='none'%3E%3Cpolyline points='0,25 300,25 340,25 350,10 362,40 374,25 405,25 430,25 442,18 450,32 458,25 900,25' fill='none' stroke='%231F6F64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}header,main{position:relative;z-index:1}.genderIcon svg,.gender svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);height:34px;transform:translateX(-50%);pointer-events:none;opacity:.09;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 50' preserveAspectRatio='none'%3E%3Cpolyline points='0,25 300,25 340,25 350,10 362,40 374,25 405,25 430,25 442,18 450,32 458,25 900,25' fill='none' stroke='%232F5FE0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}header,main{position:relative;z-index:1}.genderIcon svg,.gender svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 body::before{display:none}
 </style>
 </head>
@@ -34,28 +51,30 @@ body::before{display:none}
 </header>
 <main>
   
-  <p class="welcome" id="welcomeText">Start your journey here and become Neuro Champion.</p>
   <section class="cards" aria-label="Dashboard options">
-    <article class="card" data-page="question-bank.html">
-      <h2>Question Bank</h2><p>Browse and study the neurology MCQ question bank.</p><span class="cardMeta" id="qbCoverageMeta"></span>
+    <article class="card" data-page="question-bank.html" data-accent="blue">
+      <div class="cardIcon" aria-hidden="true">📚</div>
+      <h2>Question Bank</h2><p>Browse and study the neurology MCQ question bank.</p><span class="cardMeta" id="qbCoverageMeta"></span><div class="cardProgress" id="qbProgress"><div class="cardProgressBar" id="qbProgressBar"></div></div>
     </article>
-    <article class="card" data-page="start-test.html">
+    <article class="card" data-page="start-test.html" data-accent="mint">
+      <div class="cardIcon" aria-hidden="true">📝</div>
       <h2>Start Test</h2><p>Select a topic and begin a new test.</p>
     </article>
-    <article class="card" data-page="review-mistakes.html">
-      <h2>Review Mistakes</h2><p>Practice questions you have answered incorrectly.</p><span class="cardMeta" id="mistakesMeta"></span>
+    <article class="card" data-page="review-facts.html" data-accent="violet">
+      <div class="cardIcon" aria-hidden="true">🧠</div>
+      <h2>Review Facts</h2><p>Review concise neurology facts and learning points.</p><span class="cardMeta" id="factsMeta"></span><div class="cardProgress" id="factsProgress"><div class="cardProgressBar" id="factsProgressBar"></div></div>
     </article>
-    <article class="card" data-page="performance.html">
-      <h2>Performance</h2><p>See how you are performing across all topics and tests.</p><div class="performanceMeta"><div><strong id="performanceAccuracy">0%</strong><span>Accuracy</span></div><div><strong id="performanceAnswered">0</strong><span>Answered</span></div><div><strong id="performanceTests">0</strong><span>Tests</span></div></div>
-    </article>
-    <article class="card" data-page="textbook-review.html">
+    <article class="card" data-page="textbook-review.html" data-accent="teal">
+      <div class="cardIcon" aria-hidden="true">📖</div>
       <h2>Neurology Textbook Revision</h2><p>Review books and select chapters for focused study.</p>
     </article>
-    <article class="card" data-page="review-facts.html">
-      <h2>Review Facts</h2><p>Review concise neurology facts and learning points.</p><span class="cardMeta" id="factsMeta"></span>
+    <article class="card" data-page="performance.html" data-accent="amber">
+      <div class="cardIcon" aria-hidden="true">📈</div>
+      <h2>Performance</h2><p>See how you are performing across all topics and tests.</p><div class="performanceMeta"><div><strong id="performanceAccuracy">0%</strong><span>Accuracy</span></div><div><strong id="performanceAnswered">0</strong><span>Answered</span></div><div><strong id="performanceTests">0</strong><span>Tests</span></div></div>
     </article>
-    <article class="card" data-page="test-history.html">
-      <h2>Test History</h2><p>View previous test sessions, scores, percentages and time taken.</p>
+    <article class="card" data-page="review-mistakes.html" data-accent="rose">
+      <div class="cardIcon" aria-hidden="true">❌</div>
+      <h2>Review Mistakes</h2><p>Practice questions you have answered incorrectly.</p><span class="cardMeta" id="mistakesMeta"></span>
     </article>
   </section>
 </main>
@@ -66,7 +85,6 @@ body::before{display:none}
 const account = requireLogin();
 if (account) {
   document.getElementById("profileName").textContent = account.fullName;
-  document.getElementById("welcomeText").textContent = "Welcome back, Dr. " + account.fullName + ". Choose what you would like to do.";
 }
 document.getElementById("logoutButton").addEventListener("click", logout);
 document.querySelectorAll(".card").forEach(card => {
@@ -87,6 +105,11 @@ document.querySelectorAll(".card").forEach(card => {
     meta.textContent = attempted + " of " + total + " questions attempted (" + pct + "%)";
     meta.style.display = "block";
   }
+  const qbBar = document.getElementById("qbProgressBar");
+  if (qbBar) {
+    document.getElementById("qbProgress").style.display = "block";
+    qbBar.style.width = pct + "%";
+  }
   const mistakeCount = questions.filter(q => stats[q.id] && Number(stats[q.id].incorrect) > 0 && Number(stats[q.id].reviewCorrect || 0) < 3).length;
   const mistakesMeta = document.getElementById("mistakesMeta");
   if (mistakesMeta) {
@@ -99,13 +122,15 @@ document.querySelectorAll(".card").forEach(card => {
     let factStats = {};
     try { factStats = JSON.parse(localStorage.getItem("neurologyMCQFactStats_" + account.userId) || "{}"); } catch (e) {}
     const totalFacts = facts.length;
-    const doneFacts = facts.filter(f => {
-      const item = factStats[f.id];
-      return item && Array.isArray(item.correctSessions) && item.correctSessions.length >= 3;
-    }).length;
+    const doneFacts = facts.filter(f => Number(factStats[f.id] && factStats[f.id].correct) >= 3).length;
     const pct = totalFacts ? Math.round((doneFacts / totalFacts) * 100) : 0;
     factsMeta.textContent = doneFacts + " of " + totalFacts + " facts completed (" + pct + "%)";
     factsMeta.style.display = "block";
+    const factsBar = document.getElementById("factsProgressBar");
+    if (factsBar) {
+      document.getElementById("factsProgress").style.display = "block";
+      factsBar.style.width = pct + "%";
+    }
   }
   let history = [];
   try { history = JSON.parse(localStorage.getItem("neurologyMCQTestHistory") || "[]"); } catch (e) {}

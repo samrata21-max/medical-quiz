@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -33,7 +34,7 @@
   <div id="quizLayout">
     <section id="questionColumn">
       <h2 id="subject"></h2>
-      <div id="questionHeaderRow"><strong id="questionNumber"></strong><div id="questionExposureInfo" class="questionExposureInfo" aria-live="polite"></div><div id="questionActions"><button type="button" id="imagesButton" aria-haspopup="dialog">🖼&nbsp; Images</button><button type="button" id="flagButton">⚑&nbsp; Flag</button><button type="button" id="previousButton">←&nbsp; Previous</button><button type="button" id="nextButton">Next &nbsp;→</button></div></div>
+      <div id="questionHeaderRow"><strong id="questionNumber"></strong><div id="questionExposureInfo" class="questionExposureInfo" aria-live="polite"></div><div id="questionActions"><button type="button" id="imagesButton" aria-haspopup="dialog">🖼&nbsp; Images</button><button type="button" id="bookmarkButton" aria-label="Bookmark question" title="Bookmark question">★&nbsp; Bookmark</button><button type="button" id="flagButton">⚑&nbsp; Flag</button><button type="button" id="previousButton">←&nbsp; Previous</button><button type="button" id="nextButton">Next &nbsp;→</button></div></div>
       <p id="questionStem"><span id="question"></span></p>
       <div id="quizContainer">
         <div class="answerOption"><input type="radio" id="optionA" name="answer" value="A"><label for="optionA"><span class="optionTag">A</span><span class="optionText" id="labelAText"></span></label></div>

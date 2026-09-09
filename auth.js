@@ -78,7 +78,26 @@ function hideLegacyDashboardButtons() {
 
 hideLegacyDashboardButtons();
 
+const BOOKMARKS_KEY = "neurologyMCQBookmarks";
+function getBookmarks() {
+    const account = getAccount();
+    if (!account?.userId) return {};
+    try { const parsed = JSON.parse(localStorage.getItem(BOOKMARKS_KEY + "_" + account.userId) || "{}"); return parsed && typeof parsed === "object" ? parsed : {}; }
+    catch (error) { return {}; }
+}
+function isBookmarked(itemId) { return !!getBookmarks()[String(itemId)]; }
+function setBookmarked(itemId, value) {
+    const account = getAccount();
+    if (!account?.userId || !itemId) return false;
+    const bookmarks = getBookmarks();
+    if (value) bookmarks[String(itemId)] = Date.now(); else delete bookmarks[String(itemId)];
+    try { localStorage.setItem(BOOKMARKS_KEY + "_" + account.userId, JSON.stringify(bookmarks)); return true; } catch (error) { return false; }
+}
+function toggleBookmark(itemId) { const next = !isBookmarked(itemId); setBookmarked(itemId, next); return next; }
+
 function setupGlobalNavigation() {
+    const isAndroidMobile = /Android/i.test(navigator.userAgent) && window.matchMedia("(max-width: 700px)").matches;
+    document.body.classList.toggle("android-mobile", isAndroidMobile);
     const currentPage = window.location.pathname.split("/").pop().toLowerCase();
     const session = getSession();
     if (!session?.loggedIn || currentPage === "login.html" || currentPage === "register.html") return;
@@ -97,29 +116,34 @@ function setupGlobalNavigation() {
 
     const style = document.createElement("style");
     style.textContent = `
-        #menuButton{border:1px solid var(--border,#DFDBCF);background:none;color:inherit;width:38px;height:36px;border-radius:4px;cursor:pointer;font:22px/1 Arial,sans-serif;padding:0}
-        #menuButton:hover{border-color:var(--accent,#1F6F64);color:var(--accent,#1F6F64);background:var(--accent-soft,#DCEAE7)}
-        #summaryHomeButton{border:1px solid var(--border,#DFDBCF);background:none;color:inherit;width:38px;height:36px;border-radius:4px;cursor:pointer;font:20px/1 Arial,sans-serif;padding:0;margin-right:6px}
-        #summaryHomeButton:hover{border-color:var(--accent,#1F6F64);color:var(--accent,#1F6F64);background:var(--accent-soft,#DCEAE7)}
-        #navigationBackdrop{display:none;position:fixed;inset:0;background:rgba(32,43,47,.25);z-index:1000}
+        header .profile,#profileArea{display:flex;align-items:center;gap:12px;color:var(--ink-soft);font-size:13px}
+        #profileName{color:var(--ink);font-weight:600;line-height:40px;white-space:nowrap}
+        #menuButton{border:1px solid var(--border);background:var(--bg);color:var(--ink);width:42px;height:40px;border-radius:11px;cursor:pointer;font:19px/1 Arial,sans-serif;padding:0;transition:.15s ease}
+        #menuButton:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+        #summaryHomeButton{border:1px solid var(--border);background:var(--bg);color:var(--ink);width:42px;height:40px;border-radius:11px;cursor:pointer;font:18px/1 Arial,sans-serif;padding:0;margin-right:8px;transition:.15s ease}
+        #summaryHomeButton:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+        #navigationBackdrop{display:none;position:fixed;inset:0;background:var(--overlay);z-index:1000;backdrop-filter:blur(1px)}
         #navigationBackdrop.open{display:block}
-        #navigationDrawer{position:fixed;top:0;right:0;width:min(340px,88vw);height:100dvh;background:#fff;color:#202B2F;box-shadow:-8px 0 28px rgba(32,43,47,.16);transform:translateX(105%);transition:transform .2s ease;z-index:1001;overflow:auto;padding:22px 18px 28px}
+        #navigationDrawer{position:fixed;top:0;right:0;width:min(340px,88vw);height:100dvh;background:var(--panel);color:var(--ink);box-shadow:-12px 0 34px rgba(16,25,51,.16);transform:translateX(105%);transition:transform .22s ease;z-index:1001;overflow:auto;padding:22px 16px 28px}
         #navigationDrawer.open{transform:translateX(0)}
-        .navigationHeader{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #DFDBCF;padding-bottom:16px;margin-bottom:12px}
-        .navigationHeader strong{font:600 23px var(--serif,Georgia,serif)}
-        #navigationClose{border:0;background:none;color:#5B6B70;font-size:28px;line-height:1;cursor:pointer;padding:2px 6px}
-        .navigationSection{margin:17px 0 0}.navigationSection h2{font:500 10px var(--mono,monospace);letter-spacing:.08em;color:#68777B;margin:0 10px 7px}
-        .navigationItem{display:flex;align-items:center;gap:11px;width:100%;border:0;background:none;color:#202B2F;text-align:left;border-radius:4px;padding:11px 10px;font:14px var(--sans,Arial,sans-serif);cursor:pointer}
-        .navigationItem:hover{background:#DCEAE7;color:#1F6F64}.navigationItem[aria-disabled="true"]{color:#9AA4A6;cursor:default}.navigationItem[aria-disabled="true"]:hover{background:none;color:#9AA4A6}
-        .navigationIcon{width:22px;text-align:center;font-size:17px}.navigationLogout{margin-top:24px;border-top:1px solid #DFDBCF;padding-top:18px}.navigationLogout .navigationItem{color:#B14A3A}
-        #profileInitials{display:none;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#DCEAE7;color:#1F6F64;border:1px solid #AFCFC8;font:600 12px var(--sans,Arial,sans-serif);letter-spacing:.02em}
+        .navigationHeader{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);padding:2px 6px 18px}
+        .navigationHeader strong{font:700 21px var(--sans,Arial,sans-serif);color:var(--ink)}
+        #navigationClose{border:0;background:var(--disabled);color:var(--ink-soft);width:32px;height:32px;border-radius:9px;font-size:19px;line-height:1;cursor:pointer}
+        #navigationClose:hover{background:var(--rose-bg);color:var(--rose-fg)}
+        .navigationSection{margin:18px 0 0}.navigationSection h2{font:700 10.5px var(--sans,Arial,sans-serif);letter-spacing:.09em;color:var(--placeholder);margin:0 12px 8px}
+        .navigationItem{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;color:var(--ink);text-align:left;border-radius:11px;padding:11px 12px;font:500 14px var(--sans,Arial,sans-serif);cursor:pointer;transition:.12s ease}
+        .navigationItem:hover{background:var(--disabled);color:var(--accent)}.navigationItem[aria-disabled="true"]{color:var(--muted);cursor:default}.navigationItem[aria-disabled="true"]:hover{background:none;color:var(--muted)}
+        .navigationItem.active{background:var(--accent-soft);color:var(--accent-dark);font-weight:600}.navigationItem.active:hover{background:var(--accent-soft);color:var(--accent-dark)}
+        .navigationIcon{width:26px;height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;font-size:15px;border-radius:8px}
+        .navigationLogout{margin-top:22px;border-top:1px solid var(--border);padding-top:16px}.navigationLogout .navigationItem{color:var(--rose-fg)}.navigationLogout .navigationItem:hover{background:var(--rose-bg);color:var(--rose-fg)}
+        #profileInitials{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--accent-soft);color:var(--blue-fg);border:1px solid var(--border);font:700 12px var(--sans,Arial,sans-serif);letter-spacing:.02em}
         #profileName,#profileInitials{cursor:pointer}
-        #accountMenu{display:none;position:fixed;top:58px;right:18px;min-width:190px;background:#fff;border:1px solid #DFDBCF;border-radius:6px;box-shadow:0 8px 24px rgba(32,43,47,.14);padding:7px;z-index:1002}
+        #accountMenu{display:none;position:fixed;top:60px;right:18px;min-width:200px;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:0 14px 32px rgba(16,25,51,.16);padding:8px;z-index:1002}
         #accountMenu.open{display:block}
-        #accountMenu .navigationItem{padding:10px 11px}
+        #accountMenu .navigationItem{padding:11px 12px}
         body.active-session #profileName,body.active-session #profileInitials{display:none!important}
         body.active-session #accountMenu{display:none!important}
-        @media(max-width:520px){#navigationDrawer{width:min(360px,92vw)}#menuButton{width:36px;height:34px}#profileName{display:none!important}#profileInitials{display:inline-flex}#headerRow,.headerRow,.head{flex-wrap:nowrap!important;align-items:center!important}#headerStats{width:auto!important;flex:0 0 auto!important}#siteHeader h1,.brand{white-space:nowrap}}
+        @media(max-width:520px){#navigationDrawer{width:min(360px,92vw)}#menuButton{width:40px;height:38px}#profileName{display:none!important}#profileInitials{display:inline-flex}#headerRow,.headerRow,.head{flex-wrap:nowrap!important;align-items:center!important}#headerStats{width:auto!important;flex:0 0 auto!important}#siteHeader h1,.brand{white-space:nowrap}}
     `;
     document.head.appendChild(style);
 
@@ -156,7 +180,8 @@ function setupGlobalNavigation() {
     drawer.innerHTML = `
         <div class="navigationHeader"><strong>Neurology MCQ</strong><button id="navigationClose" type="button" aria-label="Close navigation menu">&times;</button></div>
         <nav>
-            <section class="navigationSection"><h2>LEARN</h2><button class="navigationItem" data-page="question-bank.html"><span class="navigationIcon">📚</span>Question Bank</button><button class="navigationItem" data-page="review-facts.html"><span class="navigationIcon">🧠</span>Review Facts</button><button class="navigationItem" data-disabled="true" aria-disabled="true"><span class="navigationIcon">🔖</span>Bookmarks</button><button class="navigationItem" data-page="review-mistakes.html"><span class="navigationIcon">❌</span>Incorrect Questions</button></section>
+            <section class="navigationSection"><h2>MAIN</h2><button class="navigationItem" data-page="dashboard.html"><span class="navigationIcon">🏠</span>Dashboard</button></section>
+            <section class="navigationSection"><h2>LEARN</h2><button class="navigationItem" data-page="question-bank.html"><span class="navigationIcon">📚</span>Question Bank</button><button class="navigationItem" data-page="review-facts.html"><span class="navigationIcon">🧠</span>Review Facts</button><button class="navigationItem" data-page="bookmarks.html"><span class="navigationIcon">🔖</span>Bookmarks</button><button class="navigationItem" data-page="review-mistakes.html"><span class="navigationIcon">❌</span>Incorrect Questions</button></section>
             <section class="navigationSection"><h2>TEST</h2><button class="navigationItem" data-page="start-test.html"><span class="navigationIcon">📝</span>Start Test</button><button class="navigationItem" data-page="test-history.html"><span class="navigationIcon">📊</span>Test History</button><button class="navigationItem" data-page="performance.html"><span class="navigationIcon">📈</span>My Performance</button></section>
             <section class="navigationLogout"><button class="navigationItem" id="navigationLogout" type="button"><span class="navigationIcon">🚪</span>Logout</button></section>
         </nav>`;
@@ -165,7 +190,7 @@ function setupGlobalNavigation() {
 
     const accountMenu = document.createElement("div");
     accountMenu.id = "accountMenu";
-    accountMenu.innerHTML = '<button class="navigationItem" type="button" aria-disabled="true"><span class="navigationIcon">👤</span>Account</button><button class="navigationItem" id="accountLogout" type="button"><span class="navigationIcon">🚪</span>Logout</button>';
+    accountMenu.innerHTML = '<button class="navigationItem" id="accountInformation" type="button"><span class="navigationIcon">👤</span>Account information</button><button class="navigationItem" id="accountLogout" type="button"><span class="navigationIcon">🚪</span>Logout</button>';
     document.body.appendChild(accountMenu);
 
     function closeMenu() {
@@ -189,6 +214,7 @@ function setupGlobalNavigation() {
     }
     if (profileName) profileName.addEventListener("click", toggleAccountMenu);
     initialsBadge.addEventListener("click", toggleAccountMenu);
+    document.getElementById("accountInformation").addEventListener("click", () => { window.location.href = "account.html"; });
     document.getElementById("accountLogout").addEventListener("click", logout);
     drawer.querySelectorAll("[data-page]").forEach(item => {
         item.addEventListener("click", () => { window.location.href = item.dataset.page; });
@@ -215,6 +241,9 @@ function getActiveSessionAction() {
             }
         } };
     }
+    if (currentPage === "textbook-review.html" && document.body.classList.contains("reviewing-textbook")) {
+        return { label: "End revision", icon: "■", action: () => document.getElementById("changeButton")?.click() };
+    }
     if (currentPage !== "index.html") return null;
 
     if (localStorage.getItem("neurologyMCQSessionMode") === "questionBank") {
@@ -240,11 +269,26 @@ function updateActiveNavigation() {
     const activeQuiz = currentPage === "index.html" && !summary;
     const activeFacts = currentPage === "review-facts.html" && document.body.classList.contains("reviewing-facts");
     const factsSummary = currentPage === "review-facts.html" && document.body.classList.contains("facts-summary");
-    const restricted = activeQuiz || activeFacts || summary || factsSummary;
+    const activeTextbook = currentPage === "textbook-review.html" && document.body.classList.contains("reviewing-textbook");
+    const restricted = activeQuiz || activeFacts || activeTextbook || summary || factsSummary;
     document.body.classList.toggle("active-session", restricted);
     if (accountMenu && restricted) accountMenu.classList.remove("open");
 
     const menuButton = document.getElementById("menuButton");
+    const dashboardNavItem = drawer.querySelector('[data-page="dashboard.html"]');
+    if (dashboardNavItem) {
+        dashboardNavItem.style.display = currentPage === "dashboard.html" ? "none" : "";
+    }
+    const mainNavigationSection = Array.from(drawer.querySelectorAll('.navigationSection')).find(section => {
+        const heading = section.querySelector('h2');
+        return heading && heading.textContent.trim().toUpperCase() === "MAIN";
+    });
+    if (mainNavigationSection) {
+        mainNavigationSection.style.display = currentPage === "dashboard.html" ? "none" : "";
+    }
+    drawer.querySelectorAll("[data-page]").forEach(item => {
+        item.classList.toggle("active", item.dataset.page === currentPage);
+    });
     let summaryHomeButton = document.getElementById("summaryHomeButton");
     const isSummary = summary || factsSummary;
     if (isSummary && menuButton && !summaryHomeButton) {
@@ -262,14 +306,15 @@ function updateActiveNavigation() {
     const nav = drawer.querySelector("nav");
     if (!nav) return;
     if (restricted) {
+        nav.innerHTML = action ? '<section class="navigationSection"><button class="navigationItem" id="activeSessionAction" type="button"><span class="navigationIcon">' + action.icon + '</span>' + action.label + '</button></section>' : '';
+        nav.querySelectorAll("[data-page]").forEach(item => {
+            item.addEventListener("click", () => { window.location.href = item.dataset.page; });
+        });
         if (action) {
-            nav.innerHTML = '<section class="navigationSection"><button class="navigationItem" id="activeSessionAction" type="button"><span class="navigationIcon">' + action.icon + '</span>' + action.label + '</button></section>';
             document.getElementById("activeSessionAction").addEventListener("click", () => {
                 if (typeof window._closeNavigationMenu === "function") window._closeNavigationMenu();
                 action.action();
             });
-        } else {
-            nav.innerHTML = "";
         }
     } else if (nav.querySelector("#activeSessionAction") && window._defaultNavigationMarkup) {
         nav.innerHTML = window._defaultNavigationMarkup;

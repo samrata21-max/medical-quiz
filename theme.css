@@ -1,0 +1,50 @@
+/* Shared color + type tokens. Load this file first on every page. */
+:root {
+    --bg: #EEF3FC;
+    --panel: #FFFFFF;
+    --ink: #10192E;
+    --ink-soft: #5B6B87;
+    --soft: var(--ink-soft);
+    --border: #E1E7F5;
+    --placeholder: #8895B3;
+    --disabled: #F1F4FC;
+    --muted: #C9D3E8;
+
+    --accent: #2F5FE0;
+    --accent-dark: #1E3FAE;
+    --accent-soft: #E6EDFF;
+    --on-accent: #FFFFFF;
+
+    --good: #16A34A;
+    --good-bg: #E3F8EA;
+    --good-border: #16A34A;
+
+    --bad: #E0483E;
+    --bad-bg: #FCE8E6;
+    --bad-border: #E0483E;
+
+    --flag: #E3A600;
+    --flag-bg: #FBF1DD;
+
+    --overlay: rgba(16, 25, 51, 0.45);
+    --shadow: 0 8px 26px rgba(16, 25, 51, 0.07);
+
+    --blue-bg: #E6EDFF;
+    --blue-fg: #2955E0;
+    --mint-bg: #DFF6EA;
+    --mint-fg: #12946B;
+    --rose-bg: #FCE7E6;
+    --rose-fg: #D8453C;
+    --amber-bg: #FCEFD9;
+    --amber-fg: #B5790E;
+    --teal-bg: #DEF3F2;
+    --teal-fg: #0E8074;
+    --violet-bg: #EFE9FF;
+    --violet-fg: #7452E8;
+    --steel-bg: #E7ECF5;
+    --steel-fg: #44506B;
+
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Consolas, monospace;
+}

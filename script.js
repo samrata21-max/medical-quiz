@@ -50,6 +50,7 @@ const previousButton = document.getElementById("previousButton");
 const finishButton = document.getElementById("finishButton");
 const quizContainer = document.getElementById("quizContainer");
 const flagButton = document.getElementById("flagButton");
+const bookmarkButton = document.getElementById("bookmarkButton");
 const submitButton = document.getElementById("submitButton");
 const previousInlineButton = document.getElementById("previousInlineButton");
 const nextInlineButton = document.getElementById("nextInlineButton");
@@ -67,6 +68,31 @@ const imageModal = document.getElementById("imageModal");
 const imageStage = document.getElementById("imageStage");
 const imageCounter = document.getElementById("imageCounter");
 const imageModalTitle = document.getElementById("imageModalTitle");
+
+function playPop(el) {
+    if (!el) return;
+    el.classList.remove("iconPop");
+    void el.offsetWidth;
+    el.classList.add("iconPop");
+}
+
+function isAndroidMobileView() {
+    return document.body.classList.contains("android-mobile") ||
+        (/Android/i.test(navigator.userAgent) && window.matchMedia("(max-width: 700px)").matches);
+}
+
+function updateMobileQuestionLabels() {
+    const mobile = isAndroidMobileView();
+    if (document.getElementById("questionNumber") && question) {
+        document.getElementById("questionNumber").textContent = mobile ? "Q" + (currentQuestion + 1) + ":" : "Question " + (currentQuestion + 1) + ":";
+    }
+    if (bookmarkButton) {
+        bookmarkButton.textContent = bookmarkButton.classList.contains("bookmarked") ? (mobile ? "★" : "★  Bookmarked") : (mobile ? "★" : "★  Bookmark");
+    }
+    if (flagButton) {
+        flagButton.textContent = flaggedQuestions[currentQuestion] ? (mobile ? "⚑" : "⚑  Flagged") : (mobile ? "⚑" : "⚑  Flag");
+    }
+}
 
 function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>'"]/g, function(char) {
@@ -310,10 +336,12 @@ function showQuizUI() {
     explanation.textContent = "";
 }
 
-function startNewQuiz(category, requestedCount, difficulty, startedAt) {
-    const availableQuestions = isReviewMistakesMode
+function startNewQuiz(category, requestedCount, difficulty, startedAt, forcedQuestionIds) {
+    const availableQuestions = Array.isArray(forcedQuestionIds) && forcedQuestionIds.length
+        ? questions.filter(function(q) { return forcedQuestionIds.map(String).includes(String(q.id)); })
+        : (isReviewMistakesMode
         ? getReviewMistakeQuestions()
-        : getFilteredQuestions(category, difficulty || "all");
+        : getFilteredQuestions(category, difficulty || "all"));
     const count = Math.min(Number(requestedCount) || availableQuestions.length, availableQuestions.length);
     if (!availableQuestions.length || count <= 0) return;
 
@@ -422,8 +450,14 @@ function resetAnswerControls() {
             label.classList.remove("correctAnswer", "wrongAnswer");
         }
     });
-    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag";
+    flagButton.textContent = isAndroidMobileView() ? "⚑" : (flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag");
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
+    if (bookmarkButton) {
+        const bookmarked = typeof isBookmarked === "function" && isBookmarked(quizQuestions[currentQuestion]?.id);
+        bookmarkButton.textContent = isAndroidMobileView() ? "★" : (bookmarked ? "★  Bookmarked" : "★  Bookmark");
+        bookmarkButton.classList.toggle("bookmarked", !!bookmarked);
+        bookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+    }
 }
 
 function navigateToQuestion(index) {
@@ -457,7 +491,7 @@ function displayQuestion() {
     const bankProgressBar = document.getElementById("bankProgressBar");
     if (bankQuestionProgress) bankQuestionProgress.textContent = (currentQuestion + 1) + " of " + quizQuestions.length;
     if (bankProgressBar) bankProgressBar.style.width = (((currentQuestion + 1) / quizQuestions.length) * 100) + "%";
-    document.getElementById("questionNumber").textContent = "Question " + (currentQuestion + 1) + ":";
+    document.getElementById("questionNumber").textContent = isAndroidMobileView() ? "Q" + (currentQuestion + 1) + ":" : "Question " + (currentQuestion + 1) + ":",
     document.getElementById("subject").textContent = question.subject || question.category || "Neurology";
     document.getElementById("question").textContent = question.questionText;
     document.getElementById("labelAText").textContent = question.optionA;
@@ -468,7 +502,7 @@ function displayQuestion() {
     previousButton.disabled = currentQuestion === 0;
     if (previousInlineButton) previousInlineButton.disabled = previousButton.disabled;
     if (nextInlineButton) nextInlineButton.disabled = nextButton.disabled;
-    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag";
+    flagButton.textContent = isAndroidMobileView() ? "⚑" : (flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag");
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
     updateImagesButton();
     if (isQuestionBankMode) {
@@ -537,10 +571,10 @@ function updateExposureInfo() {
     const seen = Number(entry.seen) || 0;
     const correct = Number(entry.correct) || 0;
     if (seen <= 1) {
-        el.textContent = "New";
+        el.textContent = isAndroidMobileView() ? "N" : "New";
         el.className = "questionExposureInfo newQuestion";
     } else {
-        el.textContent = "Repeat — Seen " + seen + " times | Correct " + correct + " times";
+        el.textContent = isAndroidMobileView() ? "R" : "Repeat — Seen " + seen + " times | Correct " + correct + " times";
         el.className = "questionExposureInfo repeatQuestion";
     }
 }
@@ -573,16 +607,30 @@ function showAnswerFeedback(selectedAnswer) {
     document.querySelectorAll('input[name="answer"]').forEach(function(option) {
         const label = document.querySelector('label[for="' + option.id + '"]');
         if (!label) return;
-        label.classList.remove("correctAnswer", "wrongAnswer");
+        label.classList.remove("correctAnswer", "wrongAnswer", "answerPop", "answerShake");
         if (option.value === quizQuestions[currentQuestion].correctAnswer) label.classList.add("correctAnswer");
         if (option.value === selectedAnswer.value && option.value !== quizQuestions[currentQuestion].correctAnswer) label.classList.add("wrongAnswer");
+        if (option.value === selectedAnswer.value) {
+            void label.offsetWidth;
+            label.classList.add(option.value === quizQuestions[currentQuestion].correctAnswer ? "answerPop" : "answerShake");
+        }
     });
 }
 
+if (bookmarkButton) bookmarkButton.addEventListener("click", function() {
+    if (!quizQuestions[currentQuestion]) return;
+    const bookmarked = toggleBookmark(quizQuestions[currentQuestion].id);
+    bookmarkButton.textContent = isAndroidMobileView() ? "★" : (bookmarked ? "★  Bookmarked" : "★  Bookmark");
+    bookmarkButton.classList.toggle("bookmarked", bookmarked);
+    bookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+    playPop(bookmarkButton);
+});
+
 flagButton.addEventListener("click", function() {
     flaggedQuestions[currentQuestion] = !flaggedQuestions[currentQuestion];
-    flagButton.textContent = flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag";
+    flagButton.textContent = isAndroidMobileView() ? "⚑" : (flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag");
     flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
+    playPop(flagButton);
     saveProgress();
 });
 
@@ -620,11 +668,25 @@ submitButton.addEventListener("click", function() {
     if (isCorrect) {
         score++;
         scoreDisplay.textContent = "Score: " + score;
-        result.textContent = "Correct.";
-        explanation.textContent = quizQuestions[currentQuestion].explanation || "";
-    } else {
+        if (isQuestionBankMode) {
+            result.textContent = "Correct.";
+            explanation.textContent = quizQuestions[currentQuestion].explanation || "";
+        }
+    } else if (isQuestionBankMode) {
         result.textContent = "Incorrect.";
         explanation.textContent = "The correct answer is " + quizQuestions[currentQuestion].correctAnswer + ". " + (quizQuestions[currentQuestion].explanation || "");
+    }
+
+    // Start Test and Review Mistakes use animation only; no Correct/Incorrect
+    // message or explanation below the Submit Answer row.
+    if (!isQuestionBankMode) {
+        result.textContent = "";
+        explanation.textContent = "";
+        result.style.display = "none";
+        explanation.style.display = "none";
+    } else {
+        result.style.display = "";
+        explanation.style.display = "";
     }
 
     recordAnsweredQuestion(quizQuestions[currentQuestion], isCorrect);
@@ -965,7 +1027,7 @@ if (testConfigRaw) {
             const count = Math.min(Number(testConfig.questionCount), pool.length);
             if (count > 0) {
                 localStorage.removeItem(configKey);
-                startNewQuiz(testConfig.category, count, testConfig.difficulty || "all", Date.now());
+                startNewQuiz(testConfig.category, count, testConfig.difficulty || "all", Date.now(), testConfig.questionIds);
             } else {
                 localStorage.removeItem(configKey);
                 window.location.replace(isQuestionBankMode ? "question-bank.html" : "dashboard.html");
@@ -982,3 +1044,12 @@ if (testConfigRaw) {
     window.location.replace(isReviewMistakesMode ? "dashboard.html" : "start-test.html");
 }
 }
+
+window.addEventListener("resize", function() {
+    if (question) {
+        document.getElementById("questionNumber").textContent = isAndroidMobileView() ? "Q" + (currentQuestion + 1) + ":" : "Question " + (currentQuestion + 1) + ":";
+        if (bookmarkButton) bookmarkButton.textContent = isAndroidMobileView() ? "★" : (bookmarkButton.classList.contains("bookmarked") ? "★  Bookmarked" : "★  Bookmark");
+        if (flagButton) flagButton.textContent = isAndroidMobileView() ? "⚑" : (flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag");
+        if (isQuestionBankMode) updateExposureInfo();
+    }
+});

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neurology MCQ — Account Information</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans)}header{max-width:900px;margin:auto;padding:28px 24px 0}.head{display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{font:600 28px var(--serif);cursor:pointer}.profile{display:flex;align-items:center;gap:10px;color:var(--ink-soft);font-size:13px}main{max-width:700px;margin:auto;padding:52px 24px 80px}.intro{text-align:center;margin-bottom:26px}.intro h1{font:600 34px var(--serif);margin:0 0 8px}.intro p{margin:0;color:var(--ink-soft)}.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:26px;box-shadow:0 8px 26px rgba(16,25,51,.07);margin-bottom:18px}.panel h2{font:600 22px var(--serif);margin:0 0 18px}.details{display:grid;grid-template-columns:150px 1fr;gap:12px;font-size:14px}.details span{color:var(--ink-soft)}.field{margin-top:16px}.field label{display:block;color:var(--ink-soft);font:12px var(--mono);margin-bottom:7px}.field input{width:100%;height:43px;border:1px solid var(--border);border-radius:10px;background:#fff;padding:0 12px;color:var(--ink);font:14px var(--sans)}.field input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.button{border:1px solid var(--accent);border-radius:10px;background:var(--accent);color:#fff;padding:10px 15px;font:600 14px var(--sans);cursor:pointer}.button:hover{background:var(--accent-dark)}.button.secondary{background:none;color:var(--ink-soft);border-color:var(--border)}.homeButton{width:40px;height:40px;padding:0;font-size:18px;line-height:1}.notice{min-height:20px;margin-top:14px;font-size:13px;color:var(--good)}.notice.error{color:var(--bad)}.otp{display:none;margin-top:18px;padding:16px;border-radius:10px;background:var(--accent-soft);border:1px solid var(--border)}.otp p{margin:0 0 10px;font-size:13px;color:var(--ink-soft)}.otp code{font:600 20px var(--mono);letter-spacing:.18em;color:var(--accent-dark)}.local-note{font-size:12px;color:var(--ink-soft);margin-top:12px}@media(max-width:560px){.head{align-items:flex-start}.brand{font-size:24px}.details{grid-template-columns:1fr;gap:4px}.profile{flex-wrap:wrap;justify-content:flex-end}main{padding:40px 16px}}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="brand">Neurology MCQ</div><div class="profile"><strong id="profileName"></strong><button class="button secondary homeButton" id="accountDashboardButton" type="button" aria-label="Return to dashboard" title="Return to dashboard">⌂</button></div></div></header>
+<main>
+  <section class="intro"><h1>Account Information</h1><p>View your details and keep your sign-in information current.</p></section>
+  <section class="panel"><h2>Your details</h2><div class="details"><span>Name</span><strong id="accountName"></strong><span>User ID</span><strong id="accountId"></strong><span>Current email</span><strong id="currentEmail"></strong></div></section>
+  <section class="panel"><h2>Update email or password</h2><div class="field"><label for="email">EMAIL ADDRESS</label><input id="email" type="email" autocomplete="email"></div><div class="field"><label for="newPassword">NEW PASSWORD</label><input id="newPassword" type="password" autocomplete="new-password" minlength="8" placeholder="Leave blank to keep your password"></div><div class="field"><label for="confirmPassword">CONFIRM NEW PASSWORD</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat new password"></div><div class="actions"><button class="button" id="sendOtp" type="button">Send verification code</button></div><div class="otp" id="otpPanel"><p>Enter the verification code to save your changes.</p><div class="field"><label for="otp">VERIFICATION CODE</label><input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div><div class="actions"><button class="button" id="saveChanges" type="button">Verify and save</button></div><p class="local-note">Local demo: the verification code is shown below because no email delivery service is connected.</p><code id="otpHint"></code></div><p class="notice" id="notice" role="status"></p></section>
+</main>
+<script src="auth.js"></script>
+<script>
+const account = requireLogin();
+if (!account) throw new Error("Login required");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("newPassword");
+const confirmInput = document.getElementById("confirmPassword");
+const notice = document.getElementById("notice");
+let pendingOtp = "";
+let otpExpiresAt = 0;
+document.getElementById("profileName").textContent = account.fullName;
+document.getElementById("accountName").textContent = account.fullName || "Not provided";
+document.getElementById("accountId").textContent = account.userId || "Not available";
+document.getElementById("currentEmail").textContent = account.email || "Not set";
+emailInput.value = account.email || "";
+document.querySelector(".brand").addEventListener("click", () => { window.location.href = "dashboard.html"; });
+document.getElementById("accountDashboardButton").addEventListener("click", () => { window.location.href = "dashboard.html"; });
+function setNotice(message, isError) { notice.textContent = message; notice.classList.toggle("error", !!isError); }
+function validChanges() {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setNotice("Enter a valid email address.", true); return false; }
+  if (password && password.length < 8) { setNotice("Your new password must be at least 8 characters.", true); return false; }
+  if (password !== confirmInput.value) { setNotice("The new password and confirmation do not match.", true); return false; }
+  if (email === (account.email || "") && !password) { setNotice("Make an email or password change before requesting a code.", true); return false; }
+  return true;
+}
+document.getElementById("sendOtp").addEventListener("click", () => {
+  if (!validChanges()) return;
+  pendingOtp = String(Math.floor(100000 + Math.random() * 900000));
+  otpExpiresAt = Date.now() + 10 * 60 * 1000;
+  document.getElementById("otpHint").textContent = pendingOtp;
+  document.getElementById("otpPanel").style.display = "block";
+  setNotice("Verification code created. It expires in 10 minutes.", false);
+  document.getElementById("otp").focus();
+});
+document.getElementById("saveChanges").addEventListener("click", () => {
+  if (!validChanges()) return;
+  if (!pendingOtp || Date.now() > otpExpiresAt) { setNotice("This verification code has expired. Request a new one.", true); return; }
+  if (document.getElementById("otp").value.trim() !== pendingOtp) { setNotice("That verification code is incorrect.", true); return; }
+  const updated = Object.assign({}, account, { email: emailInput.value.trim() });
+  if (passwordInput.value) {
+    try { updated.passwordHash = passwordHash(passwordInput.value); }
+    catch (error) { setNotice(error.message, true); return; }
+  }
+  localStorage.setItem(ACCOUNT_KEY, JSON.stringify(updated));
+  pendingOtp = "";
+  document.getElementById("otpPanel").style.display = "none";
+  document.getElementById("currentEmail").textContent = updated.email;
+  passwordInput.value = ""; confirmInput.value = ""; document.getElementById("otp").value = "";
+  setNotice("Your account information has been updated.", false);
+});
+</script>
+</body>
+</html>
