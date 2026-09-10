@@ -276,6 +276,9 @@ function startFactSession() {
     factSelectionPanel.style.display = "none";
     factSession.style.display = "grid";
     document.body.classList.add("reviewing-facts");
+    if (typeof updateActiveNavigation === "function") {
+    updateActiveNavigation();
+}
     document.getElementById("dashboardButton").style.display = "none";
     renderCurrentFact();
     if (typeof updateActiveNavigation === "function") updateActiveNavigation();
