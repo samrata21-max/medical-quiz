@@ -1,0 +1,8 @@
+node_modules
+.git
+.wrangler
+.cursor
+package.json
+bun.lock
+README.txt
+capacitor.config.json
