@@ -279,7 +279,7 @@ function startFactSession() {
     if (typeof updateActiveNavigation === "function") {
     updateActiveNavigation();
 }
-    document.getElementById("dashboardButton").style.display = "none";
+    
     renderCurrentFact();
     if (typeof updateActiveNavigation === "function") updateActiveNavigation();
     if (window.location.hash !== "#review") {
@@ -297,7 +297,7 @@ function startFullFactJourney() {
     factSelectionPanel.style.display = "none";
     factSession.style.display = "grid";
     document.body.classList.add("reviewing-facts");
-    document.getElementById("dashboardButton").style.display = "none";
+    
     renderCurrentFact();
     if (typeof updateActiveNavigation === "function") updateActiveNavigation();
     if (window.location.hash !== "#review") {
