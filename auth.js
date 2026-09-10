@@ -264,7 +264,8 @@ function updateActiveNavigation() {
     if (!drawer) return;
 
     const action = getActiveSessionAction();
-    const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+    const path = window.location.pathname.split("/").pop().toLowerCase();
+    const currentPage = path || "index.html";
     const summary = currentPage === "index.html" && document.body.classList.contains("session-summary");
     const activeQuiz = currentPage === "index.html" && !summary;
     const activeFacts = currentPage === "review-facts.html" && document.body.classList.contains("reviewing-facts");
