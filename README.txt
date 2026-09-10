@@ -81,3 +81,4 @@ Build or run the app from Android Studio. After changing the website files, run:
 	npx cap sync android
 
 The Android application ID is com.neurologymcq.app. The current project uses localStorage, so login, progress and history remain on the individual device until a backend and cloud synchronization are added.
+Cloudflare Workers deployment connected.
