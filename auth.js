@@ -31,10 +31,17 @@ function requireLogin() {
     return account;
 }
 
+// Normalizes the page name, handling Cloudflare's clean URLs (e.g. "/dashboard" with no .html extension) and the root path.
+function getCurrentPage() {
+    const path = window.location.pathname.split("/").pop().toLowerCase();
+    if (!path) return "index.html";
+    return path.includes(".") ? path : path + ".html";
+}
+
 function setupBrandDashboardNavigation() {
     const brand = document.querySelector("header .brand, #siteHeader h1");
     const profileName = document.querySelector("#profileName");
-    const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+    const currentPage = getCurrentPage();
     if (brand) brand.style.fontSize = "24px";
     if (profileName) {
         profileName.style.fontSize = "16px";
@@ -98,7 +105,7 @@ function toggleBookmark(itemId) { const next = !isBookmarked(itemId); setBookmar
 function setupGlobalNavigation() {
     const isCompactMobile = window.matchMedia("(max-width: 700px)").matches;
     document.body.classList.toggle("android-mobile", isCompactMobile);
-    const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+    const currentPage = getCurrentPage();
     const session = getSession();
     if (!session?.loggedIn || currentPage === "login.html" || currentPage === "register.html") return;
 
@@ -225,8 +232,7 @@ function setupGlobalNavigation() {
 }
 
 function getActiveSessionAction() {
-    const path = window.location.pathname.split("/").pop().toLowerCase();
-const currentPage = path || "index.html";
+    const currentPage = getCurrentPage();
     if (currentPage === "index.html" && document.body.classList.contains("session-summary")) {
         return { label: "Return to home", icon: "↩", action: () => { window.location.href = "dashboard.html"; } };
     }
@@ -265,8 +271,7 @@ function updateActiveNavigation() {
     if (!drawer) return;
 
     const action = getActiveSessionAction();
-    const path = window.location.pathname.split("/").pop().toLowerCase();
-    const currentPage = path || "index.html";
+    const currentPage = getCurrentPage();
     const summary = currentPage === "index.html" && document.body.classList.contains("session-summary");
     const activeQuiz = currentPage === "index.html" && !summary;
     const activeFacts = currentPage === "review-facts.html" && document.body.classList.contains("reviewing-facts");
