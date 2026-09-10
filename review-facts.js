@@ -323,7 +323,6 @@ factReviewAgainButton.addEventListener("click", function() {
 });
 factRestartJourneyButton.addEventListener("click", startFullFactJourney);
 document.getElementById("endSession").addEventListener("click", function() { endFactSession(false); });
-document.getElementById("dashboardButton").addEventListener("click", function() { window.location.href = "dashboard.html"; });
 document.getElementById("logoutButton").addEventListener("click", logout);
 
 updateSelectionSummary();if (factBookmarkButton) factBookmarkButton.addEventListener("click", function() {
