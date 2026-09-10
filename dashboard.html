@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neurology MCQ — Dashboard</title>
+<title>StepUpNeuro — Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -32,6 +32,9 @@ main{max-width:1000px;margin:0 auto;padding:40px 24px 80px;text-align:center}h1{
 .card[data-accent="mint"] .cardProgressBar{background:var(--mint-fg)}
 .card[data-accent="violet"] .cardProgressBar{background:var(--violet-fg)}
 .performanceMeta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.performanceMeta strong{display:block;font:600 20px var(--serif);color:var(--ink)}.performanceMeta span{display:block;color:var(--ink-soft);font-size:11px;margin-top:2px}
+.dashboardFooterLinks{margin-top:40px;padding-top:18px;border-top:1px solid var(--border);display:flex;justify-content:center;gap:28px;flex-wrap:wrap}
+.dashboardFooterLinks a{color:var(--ink-soft);text-decoration:none;font-size:14px}
+.dashboardFooterLinks a:hover{color:var(--accent);text-decoration:underline}
 @media(max-width:720px){.headerRow{align-items:flex-start}.cards{grid-template-columns:1fr}main{padding-top:45px}.profile{flex-wrap:wrap;justify-content:flex-end}.brand{font-size:24px}}
 
 body::before{content:"";position:fixed;left:50%;top:10px;width:min(1100px,88vw);height:34px;transform:translateX(-50%);pointer-events:none;opacity:.09;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 50' preserveAspectRatio='none'%3E%3Cpolyline points='0,25 300,25 340,25 350,10 362,40 374,25 405,25 430,25 442,18 450,32 458,25 900,25' fill='none' stroke='%232F5FE0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}header,main{position:relative;z-index:1}.genderIcon svg,.gender svg{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -41,7 +44,7 @@ body::before{display:none}
 <body>
 <header class="header">
   <div class="headerRow">
-    <div class="brand">Neurology MCQ</div>
+    <div class="brand">StepUpNeuro</div>
     <div class="profile">
         <span class="profileName" id="profileName"></span>
       <button class="logout" id="logoutButton">Logout</button>
@@ -77,6 +80,10 @@ body::before{display:none}
       <h2>Review Mistakes</h2><p>Practice questions you have answered incorrectly.</p><span class="cardMeta" id="mistakesMeta"></span>
     </article>
   </section>
+  <div class="dashboardFooterLinks">
+    <a href="contact.html">Contact Us</a>
+    <a href="become-author.html">Become an Author</a>
+  </div>
 </main>
 <script src="auth.js"></script>
 <script src="questions.js"></script>

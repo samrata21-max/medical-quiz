@@ -23,6 +23,44 @@ function renderChapterPicker(chapters, withParts) {
     const chapterItems = chapters.filter(chapter => !withParts || chapter.indexOf("Part ") !== 0);
     const parts = withParts ? chapters.filter(chapter => chapter.indexOf("Part ") === 0) : [];
 
+    // Only one chapter can be selected per section (per Part, or the whole book when it has no Parts).
+    const chapterSection = {};
+    if (withParts) {
+        parts.forEach((part, partPos) => {
+            const partIndex = chapters.indexOf(part);
+            const nextPartIndex = partPos === parts.length - 1 ? Infinity : chapters.indexOf(parts[partPos + 1]);
+            chapterItems.forEach(chapter => {
+                const idx = chapters.indexOf(chapter);
+                if (idx > partIndex && idx < nextPartIndex) chapterSection[chapter] = part;
+            });
+        });
+    } else {
+        chapterItems.forEach(chapter => { chapterSection[chapter] = "__all__"; });
+    }
+
+    function setChapterSelected(chapter, checked) {
+        let input = chapterGrid.querySelector('input[data-chapter="' + CSS.escape(chapter) + '"]');
+        if (checked) {
+            if (!input) {
+                input = document.createElement("input");
+                input.type = "checkbox";
+                input.hidden = true;
+                input.dataset.chapter = chapter;
+                chapterGrid.appendChild(input);
+            }
+            input.value = chapter;
+            input.checked = true;
+        } else if (input) {
+            input.checked = false;
+        }
+        const button = options.querySelector('.chapterOption[data-chapter="' + CSS.escape(chapter) + '"]');
+        if (button) {
+            button.classList.toggle("selected", checked);
+            button.setAttribute("aria-selected", String(checked));
+            button.querySelector(".chapterCheck").textContent = checked ? "✓" : "";
+        }
+    }
+
     function openPanel() {
         panel.hidden = false;
         toggle.classList.add("open");
@@ -92,19 +130,16 @@ function renderChapterPicker(chapters, withParts) {
         button.innerHTML = '<span class="chapterCheck"></span><span class="chapterLabel"></span>';
         button.querySelector(".chapterLabel").textContent = chapter;
         button.setAttribute("aria-selected", "false");
+        button.dataset.chapter = chapter;
         button.addEventListener("click", () => {
-            const input = document.createElement("input");
-            input.type = "checkbox";
-            input.value = chapter;
-            input.checked = !button.classList.contains("selected");
-            input.hidden = true;
-            input.dataset.chapter = chapter;
-            const oldInput = chapterGrid.querySelector('input[data-chapter="' + CSS.escape(chapter) + '"]');
-            if (oldInput) oldInput.remove();
-            chapterGrid.appendChild(input);
-            button.classList.toggle("selected", input.checked);
-            button.setAttribute("aria-selected", String(input.checked));
-            button.querySelector(".chapterCheck").textContent = input.checked ? "✓" : "";
+            const checked = !button.classList.contains("selected");
+            if (checked) {
+                const section = chapterSection[chapter];
+                chapterItems.forEach(other => {
+                    if (other !== chapter && chapterSection[other] === section) setChapterSelected(other, false);
+                });
+            }
+            setChapterSelected(chapter, checked);
             updateLabel();
             update();
         });

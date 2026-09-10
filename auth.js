@@ -185,7 +185,7 @@ function setupGlobalNavigation() {
     drawer.id = "navigationDrawer";
     drawer.setAttribute("aria-label", "Main navigation");
     drawer.innerHTML = `
-        <div class="navigationHeader"><strong>Neurology MCQ</strong><button id="navigationClose" type="button" aria-label="Close navigation menu">&times;</button></div>
+        <div class="navigationHeader"><strong>StepUpNeuro</strong><button id="navigationClose" type="button" aria-label="Close navigation menu">&times;</button></div>
         <nav>
             <section class="navigationSection"><h2>MAIN</h2><button class="navigationItem" data-page="dashboard.html"><span class="navigationIcon">🏠</span>Dashboard</button></section>
             <section class="navigationSection"><h2>LEARN</h2><button class="navigationItem" data-page="question-bank.html"><span class="navigationIcon">📚</span>Question Bank</button><button class="navigationItem" data-page="review-facts.html"><span class="navigationIcon">🧠</span>Review Facts</button><button class="navigationItem" data-page="bookmarks.html"><span class="navigationIcon">🔖</span>Bookmarks</button><button class="navigationItem" data-page="review-mistakes.html"><span class="navigationIcon">❌</span>Incorrect Questions</button></section>
