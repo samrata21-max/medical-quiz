@@ -76,9 +76,30 @@ function playPop(el) {
     el.classList.add("iconPop");
 }
 
+/* Inline SVG icons instead of the ★ / ⚑ Unicode characters: on some Android
+   browsers those glyphs fall back to a fixed-color emoji font that ignores
+   CSS color entirely. SVG with fill/stroke="currentColor" always obeys it. */
+const STAR_ICON_SVG = '<svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M10 1.6l2.47 5.24 5.78.6-4.32 3.94 1.19 5.72L10 14.9l-5.12 3.2 1.19-5.72L1.75 7.44l5.78-.6z" fill="currentColor"/></svg>';
+const FLAG_ICON_SVG = '<svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M4 1.6v16.8M4 2.6h10.6l-1.9 3.4 1.9 3.4H4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+
+function setBookmarkButtonState(bookmarked) {
+    if (!bookmarkButton) return;
+    const mobile = isAndroidMobileView();
+    bookmarkButton.innerHTML = STAR_ICON_SVG + (mobile ? "" : (bookmarked ? "  Bookmarked" : "  Bookmark"));
+    bookmarkButton.classList.toggle("bookmarked", !!bookmarked);
+    bookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+}
+
+function setFlagButtonState(flagged) {
+    if (!flagButton) return;
+    const mobile = isAndroidMobileView();
+    flagButton.innerHTML = FLAG_ICON_SVG + (mobile ? "" : (flagged ? "  Flagged" : "  Flag"));
+    flagButton.classList.toggle("flagged", !!flagged);
+}
+
 function isAndroidMobileView() {
     return document.body.classList.contains("android-mobile") ||
-        (/Android/i.test(navigator.userAgent) && window.matchMedia("(max-width: 700px)").matches);
+        window.matchMedia("(max-width: 700px)").matches;
 }
 
 function updateMobileQuestionLabels() {
@@ -87,10 +108,10 @@ function updateMobileQuestionLabels() {
         document.getElementById("questionNumber").textContent = mobile ? "Q" + (currentQuestion + 1) + ":" : "Question " + (currentQuestion + 1) + ":";
     }
     if (bookmarkButton) {
-        bookmarkButton.textContent = bookmarkButton.classList.contains("bookmarked") ? (mobile ? "★" : "★  Bookmarked") : (mobile ? "★" : "★  Bookmark");
+        setBookmarkButtonState(bookmarkButton.classList.contains("bookmarked"));
     }
     if (flagButton) {
-        flagButton.textContent = flaggedQuestions[currentQuestion] ? (mobile ? "⚑" : "⚑  Flagged") : (mobile ? "⚑" : "⚑  Flag");
+        setFlagButtonState(!!flaggedQuestions[currentQuestion]);
     }
 }
 
@@ -450,13 +471,10 @@ function resetAnswerControls() {
             label.classList.remove("correctAnswer", "wrongAnswer");
         }
     });
-    flagButton.textContent = isAndroidMobileView() ? "⚑" : (flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag");
-    flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
+    setFlagButtonState(!!flaggedQuestions[currentQuestion]);
     if (bookmarkButton) {
         const bookmarked = typeof isBookmarked === "function" && isBookmarked(quizQuestions[currentQuestion]?.id);
-        bookmarkButton.textContent = isAndroidMobileView() ? "★" : (bookmarked ? "★  Bookmarked" : "★  Bookmark");
-        bookmarkButton.classList.toggle("bookmarked", !!bookmarked);
-        bookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+        setBookmarkButtonState(!!bookmarked);
     }
 }
 
@@ -502,8 +520,7 @@ function displayQuestion() {
     previousButton.disabled = currentQuestion === 0;
     if (previousInlineButton) previousInlineButton.disabled = previousButton.disabled;
     if (nextInlineButton) nextInlineButton.disabled = nextButton.disabled;
-    flagButton.textContent = isAndroidMobileView() ? "⚑" : (flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag");
-    flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
+    setFlagButtonState(!!flaggedQuestions[currentQuestion]);
     updateImagesButton();
     if (isQuestionBankMode) {
         recordQuestionExposure(question);
@@ -620,16 +637,13 @@ function showAnswerFeedback(selectedAnswer) {
 if (bookmarkButton) bookmarkButton.addEventListener("click", function() {
     if (!quizQuestions[currentQuestion]) return;
     const bookmarked = toggleBookmark(quizQuestions[currentQuestion].id);
-    bookmarkButton.textContent = isAndroidMobileView() ? "★" : (bookmarked ? "★  Bookmarked" : "★  Bookmark");
-    bookmarkButton.classList.toggle("bookmarked", bookmarked);
-    bookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+    setBookmarkButtonState(bookmarked);
     playPop(bookmarkButton);
 });
 
 flagButton.addEventListener("click", function() {
     flaggedQuestions[currentQuestion] = !flaggedQuestions[currentQuestion];
-    flagButton.textContent = isAndroidMobileView() ? "⚑" : (flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag");
-    flagButton.classList.toggle("flagged", !!flaggedQuestions[currentQuestion]);
+    setFlagButtonState(!!flaggedQuestions[currentQuestion]);
     playPop(flagButton);
     saveProgress();
 });
@@ -1048,8 +1062,8 @@ if (testConfigRaw) {
 window.addEventListener("resize", function() {
     if (question) {
         document.getElementById("questionNumber").textContent = isAndroidMobileView() ? "Q" + (currentQuestion + 1) + ":" : "Question " + (currentQuestion + 1) + ":";
-        if (bookmarkButton) bookmarkButton.textContent = isAndroidMobileView() ? "★" : (bookmarkButton.classList.contains("bookmarked") ? "★  Bookmarked" : "★  Bookmark");
-        if (flagButton) flagButton.textContent = isAndroidMobileView() ? "⚑" : (flaggedQuestions[currentQuestion] ? "⚑  Flagged" : "⚑  Flag");
+        if (bookmarkButton) setBookmarkButtonState(bookmarkButton.classList.contains("bookmarked"));
+        if (flagButton) setFlagButtonState(!!flaggedQuestions[currentQuestion]);
         if (isQuestionBankMode) updateExposureInfo();
     }
 });

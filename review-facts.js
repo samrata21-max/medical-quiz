@@ -47,15 +47,35 @@ function playPop(el) {
     el.classList.add("iconPop");
 }
 
+/* Inline SVG icons instead of the ★ / ⚑ Unicode characters: on some Android
+   browsers those glyphs fall back to a fixed-color emoji font that ignores
+   CSS color entirely. SVG with fill/stroke="currentColor" always obeys it. */
+const STAR_ICON_SVG = '<svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M10 1.6l2.47 5.24 5.78.6-4.32 3.94 1.19 5.72L10 14.9l-5.12 3.2 1.19-5.72L1.75 7.44l5.78-.6z" fill="currentColor"/></svg>';
+const FLAG_ICON_SVG = '<svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M4 1.6v16.8M4 2.6h10.6l-1.9 3.4 1.9 3.4H4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+
+function setFactBookmarkButtonState(bookmarked) {
+    if (!factBookmarkButton) return;
+    const mobile = isAndroidMobileFactView();
+    factBookmarkButton.innerHTML = STAR_ICON_SVG + (mobile ? "" : (bookmarked ? "  Bookmarked" : "  Bookmark"));
+    factBookmarkButton.classList.toggle("bookmarked", !!bookmarked);
+    factBookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+}
+
+function setFactFlagButtonState(flagged) {
+    if (!factFlagButton) return;
+    const mobile = isAndroidMobileFactView();
+    factFlagButton.innerHTML = FLAG_ICON_SVG + (mobile ? "" : (flagged ? "  Flagged" : "  Flag"));
+    factFlagButton.classList.toggle("flagged", !!flagged);
+}
+
 function isAndroidMobileFactView() {
     return document.body.classList.contains("android-mobile") ||
-        (/Android/i.test(navigator.userAgent) && window.matchMedia("(max-width: 700px)").matches);
+        window.matchMedia("(max-width: 700px)").matches;
 }
 
 function updateFactActionLabels() {
-    const mobile = isAndroidMobileFactView();
-    if (factBookmarkButton) factBookmarkButton.textContent = mobile ? "★" : (factBookmarkButton.classList.contains("bookmarked") ? "★  Bookmarked" : "★  Bookmark");
-    if (factFlagButton) factFlagButton.textContent = mobile ? "⚑" : (flaggedFacts[currentFact?.id] ? "⚑  Flagged" : "⚑  Flag");
+    if (factBookmarkButton) setFactBookmarkButtonState(factBookmarkButton.classList.contains("bookmarked"));
+    if (factFlagButton) setFactFlagButtonState(!!flaggedFacts[currentFact?.id]);
 }
 
 function loadFactStats() {
@@ -168,14 +188,10 @@ function renderCurrentFact() {
     renderFactStatus(currentFact);
     if (factBookmarkButton) {
         const bookmarked = typeof isBookmarked === "function" && isBookmarked(currentFact.id);
-        factBookmarkButton.textContent = isAndroidMobileFactView() ? "★" : (bookmarked ? "★  Bookmarked" : "★  Bookmark");
-        factBookmarkButton.classList.toggle("bookmarked", !!bookmarked);
-        factBookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+        setFactBookmarkButtonState(!!bookmarked);
     }
     if (factFlagButton) {
-        const flagged = !!flaggedFacts[currentFact.id];
-        factFlagButton.textContent = isAndroidMobileFactView() ? "⚑" : (flagged ? "⚑  Flagged" : "⚑  Flag");
-        factFlagButton.classList.toggle("flagged", flagged);
+        setFactFlagButtonState(!!flaggedFacts[currentFact.id]);
     }
     renderOptions(currentFact);
     markFactSeen(currentFact);
@@ -310,16 +326,13 @@ document.getElementById("logoutButton").addEventListener("click", logout);
 updateSelectionSummary();if (factBookmarkButton) factBookmarkButton.addEventListener("click", function() {
     if (!currentFact) return;
     const bookmarked = toggleBookmark(currentFact.id);
-    factBookmarkButton.textContent = isAndroidMobileFactView() ? "★" : (bookmarked ? "★  Bookmarked" : "★  Bookmark");
-    factBookmarkButton.classList.toggle("bookmarked", bookmarked);
-    factBookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
+    setFactBookmarkButtonState(bookmarked);
     playPop(factBookmarkButton);
 });
 if (factFlagButton) factFlagButton.addEventListener("click", function() {
     if (!currentFact) return;
     flaggedFacts[currentFact.id] = !flaggedFacts[currentFact.id];
-    factFlagButton.textContent = isAndroidMobileFactView() ? "⚑" : (flaggedFacts[currentFact.id] ? "⚑  Flagged" : "⚑  Flag");
-    factFlagButton.classList.toggle("flagged", !!flaggedFacts[currentFact.id]);
+    setFactFlagButtonState(!!flaggedFacts[currentFact.id]);
     playPop(factFlagButton);
 });
 

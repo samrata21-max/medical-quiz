@@ -96,8 +96,8 @@ function setBookmarked(itemId, value) {
 function toggleBookmark(itemId) { const next = !isBookmarked(itemId); setBookmarked(itemId, next); return next; }
 
 function setupGlobalNavigation() {
-    const isAndroidMobile = /Android/i.test(navigator.userAgent) && window.matchMedia("(max-width: 700px)").matches;
-    document.body.classList.toggle("android-mobile", isAndroidMobile);
+    const isCompactMobile = window.matchMedia("(max-width: 700px)").matches;
+    document.body.classList.toggle("android-mobile", isCompactMobile);
     const currentPage = window.location.pathname.split("/").pop().toLowerCase();
     const session = getSession();
     if (!session?.loggedIn || currentPage === "login.html" || currentPage === "register.html") return;

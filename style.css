@@ -906,6 +906,7 @@ header, main, .container { position: relative; z-index: 1; }
 @keyframes iconPop{0%{transform:scale(1)}45%{transform:scale(1.22)}100%{transform:scale(1)}}
 #questionActions #bookmarkButton,#questionActions #flagButton{display:inline-block}
 .iconPop{animation:iconPop .3s ease}
+.btnIcon{vertical-align:-2px}
 @media(prefers-reduced-motion:reduce){.iconPop{animation:none}}
 
 /* Review Answers navigator: clear status colors */
