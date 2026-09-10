@@ -225,7 +225,8 @@ function setupGlobalNavigation() {
 }
 
 function getActiveSessionAction() {
-    const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+    const path = window.location.pathname.split("/").pop().toLowerCase();
+const currentPage = path || "index.html";
     if (currentPage === "index.html" && document.body.classList.contains("session-summary")) {
         return { label: "Return to home", icon: "↩", action: () => { window.location.href = "dashboard.html"; } };
     }
