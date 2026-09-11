@@ -18,7 +18,6 @@ const factAnswerHeading = document.getElementById("answerHeading");
 const factOptions = document.getElementById("answerOptions");
 const factRevealButton = document.getElementById("revealButton");
 const factBookmarkButton = document.getElementById("factBookmarkButton");
-const factFlagButton = document.getElementById("factFlagButton");
 const factFeedback = document.getElementById("feedback");
 const factNextButton = document.getElementById("nextButton");
 const factKnewButton = document.getElementById("knewButton");
@@ -33,7 +32,6 @@ let factStats = loadFactStats();
 let selectedFactPool = [];
 let currentFactIndex = 0;
 let currentFact = null;
-let flaggedFacts = {};
 let selectedFactAnswer = "";
 let factRevealed = false;
 let factSessionCorrect = new Set();
@@ -51,7 +49,6 @@ function playPop(el) {
    browsers those glyphs fall back to a fixed-color emoji font that ignores
    CSS color entirely. SVG with fill/stroke="currentColor" always obeys it. */
 const STAR_ICON_SVG = '<svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M10 1.6l2.47 5.24 5.78.6-4.32 3.94 1.19 5.72L10 14.9l-5.12 3.2 1.19-5.72L1.75 7.44l5.78-.6z" fill="currentColor"/></svg>';
-const FLAG_ICON_SVG = '<svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M4 1.6v16.8M4 2.6h10.6l-1.9 3.4 1.9 3.4H4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg>';
 
 function setFactBookmarkButtonState(bookmarked) {
     if (!factBookmarkButton) return;
@@ -61,13 +58,6 @@ function setFactBookmarkButtonState(bookmarked) {
     factBookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
 }
 
-function setFactFlagButtonState(flagged) {
-    if (!factFlagButton) return;
-    const mobile = isAndroidMobileFactView();
-    factFlagButton.innerHTML = FLAG_ICON_SVG + (mobile ? "" : (flagged ? "  Flagged" : "  Flag"));
-    factFlagButton.classList.toggle("flagged", !!flagged);
-}
-
 function isAndroidMobileFactView() {
     return document.body.classList.contains("android-mobile") ||
         window.matchMedia("(max-width: 700px)").matches;
@@ -75,7 +65,6 @@ function isAndroidMobileFactView() {
 
 function updateFactActionLabels() {
     if (factBookmarkButton) setFactBookmarkButtonState(factBookmarkButton.classList.contains("bookmarked"));
-    if (factFlagButton) setFactFlagButtonState(!!flaggedFacts[currentFact?.id]);
 }
 
 function loadFactStats() {
@@ -189,9 +178,6 @@ function renderCurrentFact() {
     if (factBookmarkButton) {
         const bookmarked = typeof isBookmarked === "function" && isBookmarked(currentFact.id);
         setFactBookmarkButtonState(!!bookmarked);
-    }
-    if (factFlagButton) {
-        setFactFlagButtonState(!!flaggedFacts[currentFact.id]);
     }
     renderOptions(currentFact);
     markFactSeen(currentFact);
@@ -323,19 +309,12 @@ factReviewAgainButton.addEventListener("click", function() {
 });
 factRestartJourneyButton.addEventListener("click", startFullFactJourney);
 document.getElementById("endSession").addEventListener("click", function() { endFactSession(false); });
-document.getElementById("logoutButton").addEventListener("click", logout);
 
 updateSelectionSummary();if (factBookmarkButton) factBookmarkButton.addEventListener("click", function() {
     if (!currentFact) return;
     const bookmarked = toggleBookmark(currentFact.id);
     setFactBookmarkButtonState(bookmarked);
     playPop(factBookmarkButton);
-});
-if (factFlagButton) factFlagButton.addEventListener("click", function() {
-    if (!currentFact) return;
-    flaggedFacts[currentFact.id] = !flaggedFacts[currentFact.id];
-    setFactFlagButtonState(!!flaggedFacts[currentFact.id]);
-    playPop(factFlagButton);
 });
 
 

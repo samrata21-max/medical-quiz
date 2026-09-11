@@ -22,6 +22,8 @@ body {
 
 .loginCard {
     width: min(420px, 100%);
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
     background: var(--panel);
     border: 1px solid var(--border);
@@ -30,23 +32,26 @@ body {
     box-shadow: 0 14px 40px rgba(16,25,51,.08);
 }
 
-.brandName {
-    font-family: var(--serif);
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
+.login-logo-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 0 auto;
+    margin-bottom: 28px;
 }
 
-.brandLine {
-    width: 170px;
-    height: 1px;
-    margin: 15px auto 42px;
-    background: var(--accent);
-    opacity: 0.45;
+.login-logo {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    margin: 0;
 }
 
 .loginCard h1 {
-    margin: 0;
+    margin: 0 0 18px;
     font-family: var(--serif);
     font-size: 30px;
     font-weight: 600;
@@ -188,13 +193,10 @@ body {
         padding: 30px 22px;
     }
 
-    .brandName {
-        font-size: 27px;
+    .login-logo-wrapper {
+        margin-bottom: 14px;
     }
 
-    .brandLine {
-        margin-bottom: 35px;
-    }
 }
 
 /* Clinical icon system + subtle EKG identity */

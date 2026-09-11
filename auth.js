@@ -38,19 +38,57 @@ function getCurrentPage() {
     return path.includes(".") ? path : path + ".html";
 }
 
+function normalizeSiteHeader() {
+    const header = document.querySelector("header");
+    if (!header) return;
+
+    const existingRow = header.querySelector(".site-header__inner, .head, .headerRow, #headerRow");
+    if (!existingRow) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "site-header__inner";
+        while (header.firstElementChild) wrapper.appendChild(header.firstElementChild);
+        header.appendChild(wrapper);
+        return;
+    }
+
+    existingRow.classList.add("site-header__inner");
+
+    const brand = existingRow.querySelector(".site-brand, .siteBrand");
+    if (brand) {
+        brand.classList.add("site-brand");
+        const logo = brand.querySelector(".site-brand__logo, .siteBrandLogo, .brandLogo");
+        if (!logo && brand.textContent.trim() === "StepUpNeuro") {
+            brand.innerHTML = '<img class="site-brand__logo" src="stepupneuro_logo.svg" alt="StepUpNeuro">';
+        } else if (logo) {
+            logo.classList.add("site-brand__logo");
+        }
+    }
+
+    const actions = existingRow.querySelector(".profile, #headerStats, #profileArea, .site-header__actions");
+    if (actions) {
+        actions.classList.add("site-header__actions");
+    }
+
+    const profileName = existingRow.querySelector("#profileName, .profileName");
+    if (profileName) {
+        profileName.classList.add("site-header__profile-name");
+    }
+}
+
 function setupBrandDashboardNavigation() {
-    const brand = document.querySelector("header .brand, #siteHeader h1");
+    const brand = document.querySelector("header .site-brand, #siteHeader h1");
     const profileName = document.querySelector("#profileName");
     const currentPage = getCurrentPage();
-    if (brand) brand.style.fontSize = "24px";
+    if (brand && !brand.querySelector(".brandLogo, .siteBrandLogo, .site-brand__logo") && brand.textContent.trim() === "StepUpNeuro") {
+        brand.classList.add("site-brand");
+        brand.innerHTML = '<img class="site-brand__logo" src="stepupneuro_logo.svg" alt="StepUpNeuro">';
+    }
+    if (brand) {
+        brand.classList.add("site-brand");
+    }
     if (profileName) {
         profileName.style.fontSize = "16px";
         profileName.style.lineHeight = "1.2";
-    }
-    const topLogout = document.querySelector("#logoutButton, .logout");
-    if (topLogout) topLogout.style.display = "none";
-    if (profileName && profileName.textContent && !/^Dr\.\s/i.test(profileName.textContent)) {
-        profileName.textContent = "Dr. " + profileName.textContent.trim();
     }
     if (!brand || currentPage === "index.html") return;
 
@@ -70,21 +108,6 @@ function setupBrandDashboardNavigation() {
     brand.addEventListener("keydown", goToDashboard);
 }
 
-function hideLegacyDashboardButtons() {
-    ["dashboardButton", "dashboardAfter"].forEach(id => {
-        let button = document.getElementById(id);
-        if (!button) {
-            button = document.createElement("button");
-            button.id = id;
-            document.body.appendChild(button);
-        }
-        button.hidden = true;
-        button.style.display = "none";
-    });
-}
-
-hideLegacyDashboardButtons();
-
 const BOOKMARKS_KEY = "neurologyMCQBookmarks";
 function getBookmarks() {
     const account = getAccount();
@@ -103,6 +126,7 @@ function setBookmarked(itemId, value) {
 function toggleBookmark(itemId) { const next = !isBookmarked(itemId); setBookmarked(itemId, next); return next; }
 
 function setupGlobalNavigation() {
+    normalizeSiteHeader();
     const isCompactMobile = window.matchMedia("(max-width: 700px)").matches;
     document.body.classList.toggle("android-mobile", isCompactMobile);
     const currentPage = getCurrentPage();
@@ -123,12 +147,14 @@ function setupGlobalNavigation() {
 
     const style = document.createElement("style");
     style.textContent = `
-        header .profile,#profileArea{display:flex;align-items:center;gap:12px;color:var(--ink-soft);font-size:13px}
-        #profileName{color:var(--ink);font-weight:600;line-height:40px;white-space:nowrap}
-        #menuButton{border:1px solid var(--border);background:var(--bg);color:var(--ink);width:42px;height:40px;border-radius:11px;cursor:pointer;font:19px/1 Arial,sans-serif;padding:0;transition:.15s ease}
+        .siteBrand,.brand{display:flex;align-items:center;justify-content:center;height:52px;min-height:52px;flex:0 0 auto}
+        header .profile,#profileArea{display:flex;align-items:center;justify-self:end;gap:12px;color:var(--ink-soft);font-size:13px;flex-wrap:nowrap;height:52px;min-height:52px}
+        #profileName{color:var(--ink);font-weight:600;line-height:1;white-space:nowrap;display:inline-flex;align-items:center}
+        #menuButton,#summaryHomeButton,.homeButton{width:52px;height:52px;min-width:52px;min-height:52px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+        #menuButton{border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:11px;cursor:pointer;font:19px/1 Arial,sans-serif;padding:0;transition:.15s ease;line-height:1}
         #menuButton:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-        #summaryHomeButton{border:1px solid var(--border);background:var(--bg);color:var(--ink);width:42px;height:40px;border-radius:11px;cursor:pointer;font:18px/1 Arial,sans-serif;padding:0;margin-right:8px;transition:.15s ease}
-        #summaryHomeButton:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+        #summaryHomeButton,.homeButton{border:1px solid var(--border);background:var(--bg);color:var(--ink);border-radius:11px;cursor:pointer;font:18px/1 Arial,sans-serif;padding:0;margin-right:8px;transition:.15s ease;line-height:1}
+        #summaryHomeButton:hover,.homeButton:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
         #navigationBackdrop{display:none;position:fixed;inset:0;background:var(--overlay);z-index:1000;backdrop-filter:blur(1px)}
         #navigationBackdrop.open{display:block}
         #navigationDrawer{position:fixed;top:0;right:0;width:min(340px,88vw);height:100dvh;background:var(--panel);color:var(--ink);box-shadow:-12px 0 34px rgba(16,25,51,.16);transform:translateX(105%);transition:transform .22s ease;z-index:1001;overflow:auto;padding:22px 16px 28px}
@@ -143,27 +169,18 @@ function setupGlobalNavigation() {
         .navigationItem.active{background:var(--accent-soft);color:var(--accent-dark);font-weight:600}.navigationItem.active:hover{background:var(--accent-soft);color:var(--accent-dark)}
         .navigationIcon{width:26px;height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;font-size:15px;border-radius:8px}
         .navigationLogout{margin-top:22px;border-top:1px solid var(--border);padding-top:16px}.navigationLogout .navigationItem{color:var(--rose-fg)}.navigationLogout .navigationItem:hover{background:var(--rose-bg);color:var(--rose-fg)}
-        #profileInitials{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--accent-soft);color:var(--blue-fg);border:1px solid var(--border);font:700 12px var(--sans,Arial,sans-serif);letter-spacing:.02em}
-        #profileName,#profileInitials{cursor:pointer}
+        #profileName{cursor:pointer}
+        #headerStats{display:flex;align-items:center;gap:12px;flex-wrap:nowrap;margin-left:auto;height:52px;min-height:52px}
         #accountMenu{display:none;position:fixed;top:60px;right:18px;min-width:200px;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:0 14px 32px rgba(16,25,51,.16);padding:8px;z-index:1002}
         #accountMenu.open{display:block}
         #accountMenu .navigationItem{padding:11px 12px}
-        body.active-session #profileName,body.active-session #profileInitials{display:none!important}
+        body.active-session #profileName{display:none!important}
         body.active-session #accountMenu{display:none!important}
-        @media(max-width:520px){#navigationDrawer{width:min(360px,92vw)}#menuButton{width:40px;height:38px}#profileName{display:none!important}#profileInitials{display:inline-flex}#headerRow,.headerRow,.head{flex-wrap:nowrap!important;align-items:center!important}#headerStats{width:auto!important;flex:0 0 auto!important}#siteHeader h1,.brand{white-space:nowrap}}
+        @media(max-width:520px){#navigationDrawer{width:min(360px,92vw)}#profileName{display:none!important}#headerRow,.headerRow,.head{flex-wrap:nowrap!important;align-items:center!important;min-height:52px}#headerStats{width:auto!important;flex:0 0 auto!important;height:52px;min-height:52px}#siteHeader h1,.brand{white-space:nowrap}} 
     `;
     document.head.appendChild(style);
 
-    const initialsBadge = document.createElement("span");
-    initialsBadge.id = "profileInitials";
-    initialsBadge.textContent = initials || "?";
-    initialsBadge.setAttribute("aria-label", "User initials");
     const profileName = anchor.querySelector("#profileName");
-    if (profileName) {
-        profileName.insertAdjacentElement("afterend", initialsBadge);
-    } else {
-        anchor.appendChild(initialsBadge);
-    }
 
     const menuButton = document.createElement("button");
     menuButton.id = "menuButton";
@@ -220,7 +237,6 @@ function setupGlobalNavigation() {
         closeMenu();
     }
     if (profileName) profileName.addEventListener("click", toggleAccountMenu);
-    initialsBadge.addEventListener("click", toggleAccountMenu);
     document.getElementById("accountInformation").addEventListener("click", () => { window.location.href = "account.html"; });
     document.getElementById("accountLogout").addEventListener("click", logout);
     drawer.querySelectorAll("[data-page]").forEach(item => {

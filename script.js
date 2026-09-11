@@ -28,7 +28,6 @@ let currentQuestion = 0;
 let score = 0;
 let answered = false;
 let userAnswers = [];
-let flaggedQuestions = [];
 let question = null;
 let selectedDifficulty = "all";
 let currentTestCategory = "all";
@@ -49,7 +48,6 @@ const nextButton = document.getElementById("nextButton");
 const previousButton = document.getElementById("previousButton");
 const finishButton = document.getElementById("finishButton");
 const quizContainer = document.getElementById("quizContainer");
-const flagButton = document.getElementById("flagButton");
 const bookmarkButton = document.getElementById("bookmarkButton");
 const submitButton = document.getElementById("submitButton");
 const previousInlineButton = document.getElementById("previousInlineButton");
@@ -57,7 +55,6 @@ const nextInlineButton = document.getElementById("nextInlineButton");
 const result = document.getElementById("result");
 const explanation = document.getElementById("explanation");
 const scoreDisplay = document.getElementById("score");
-const dashboardButton = document.getElementById("dashboardButton");
 const reviewButton = document.getElementById("reviewButton");
 const reviewContainer = document.getElementById("reviewContainer");
 const quizLayout = document.getElementById("quizLayout");
@@ -80,7 +77,6 @@ function playPop(el) {
    browsers those glyphs fall back to a fixed-color emoji font that ignores
    CSS color entirely. SVG with fill/stroke="currentColor" always obeys it. */
 const STAR_ICON_SVG = '<svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M10 1.6l2.47 5.24 5.78.6-4.32 3.94 1.19 5.72L10 14.9l-5.12 3.2 1.19-5.72L1.75 7.44l5.78-.6z" fill="currentColor"/></svg>';
-const FLAG_ICON_SVG = '<svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M4 1.6v16.8M4 2.6h10.6l-1.9 3.4 1.9 3.4H4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg>';
 
 function setBookmarkButtonState(bookmarked) {
     if (!bookmarkButton) return;
@@ -88,13 +84,6 @@ function setBookmarkButtonState(bookmarked) {
     bookmarkButton.innerHTML = STAR_ICON_SVG + (mobile ? "" : (bookmarked ? "  Bookmarked" : "  Bookmark"));
     bookmarkButton.classList.toggle("bookmarked", !!bookmarked);
     bookmarkButton.setAttribute("aria-pressed", bookmarked ? "true" : "false");
-}
-
-function setFlagButtonState(flagged) {
-    if (!flagButton) return;
-    const mobile = isAndroidMobileView();
-    flagButton.innerHTML = FLAG_ICON_SVG + (mobile ? "" : (flagged ? "  Flagged" : "  Flag"));
-    flagButton.classList.toggle("flagged", !!flagged);
 }
 
 function isAndroidMobileView() {
@@ -109,9 +98,6 @@ function updateMobileQuestionLabels() {
     }
     if (bookmarkButton) {
         setBookmarkButtonState(bookmarkButton.classList.contains("bookmarked"));
-    }
-    if (flagButton) {
-        setFlagButtonState(!!flaggedQuestions[currentQuestion]);
     }
 }
 
@@ -285,7 +271,6 @@ function saveProgress() {
         order: quizQuestions.map(function(q) { return q.id; }),
         currentQuestion: currentQuestion,
         userAnswers: userAnswers,
-        flaggedQuestions: flaggedQuestions,
         timedOutQuestions: timedOutQuestions,
         questionDeadlines: questionDeadlines,
         score: score,
@@ -318,7 +303,6 @@ function showQuizUI() {
     finishButton.style.display = "inline-flex";
     result.style.display = isQuestionBankMode || isReviewMistakesMode ? "block" : "none";
     explanation.style.display = isQuestionBankMode || isReviewMistakesMode ? "block" : "none";
-    if (dashboardButton) dashboardButton.style.display = "none";
     if (timerDisplay) timerDisplay.style.display = isQuestionBankMode ? "none" : "inline-flex";
     const bankProgressRow = document.getElementById("bankProgressRow");
     const exposureInfo = document.getElementById("questionExposureInfo");
@@ -373,7 +357,6 @@ function startNewQuiz(category, requestedCount, difficulty, startedAt, forcedQue
     score = 0;
     answered = false;
     userAnswers = [];
-    flaggedQuestions = [];
     timedOutQuestions = [];
     questionDeadlines = [];
     question = quizQuestions[0];
@@ -437,7 +420,6 @@ function restoreProgress() {
     quizQuestions = restoredQuestions;
     score = Number(progress.score) || 0;
     userAnswers = Array.isArray(progress.userAnswers) ? progress.userAnswers : [];
-    flaggedQuestions = Array.isArray(progress.flaggedQuestions) ? progress.flaggedQuestions : [];
     timedOutQuestions = Array.isArray(progress.timedOutQuestions) ? progress.timedOutQuestions : [];
     questionDeadlines = Array.isArray(progress.questionDeadlines) ? progress.questionDeadlines : [];
     selectedDifficulty = progress.difficulty || "all";
@@ -471,7 +453,6 @@ function resetAnswerControls() {
             label.classList.remove("correctAnswer", "wrongAnswer");
         }
     });
-    setFlagButtonState(!!flaggedQuestions[currentQuestion]);
     if (bookmarkButton) {
         const bookmarked = typeof isBookmarked === "function" && isBookmarked(quizQuestions[currentQuestion]?.id);
         setBookmarkButtonState(!!bookmarked);
@@ -520,7 +501,6 @@ function displayQuestion() {
     previousButton.disabled = currentQuestion === 0;
     if (previousInlineButton) previousInlineButton.disabled = previousButton.disabled;
     if (nextInlineButton) nextInlineButton.disabled = nextButton.disabled;
-    setFlagButtonState(!!flaggedQuestions[currentQuestion]);
     updateImagesButton();
     if (isQuestionBankMode) {
         recordQuestionExposure(question);
@@ -641,13 +621,6 @@ if (bookmarkButton) bookmarkButton.addEventListener("click", function() {
     playPop(bookmarkButton);
 });
 
-flagButton.addEventListener("click", function() {
-    flaggedQuestions[currentQuestion] = !flaggedQuestions[currentQuestion];
-    setFlagButtonState(!!flaggedQuestions[currentQuestion]);
-    playPop(flagButton);
-    saveProgress();
-});
-
 previousButton.addEventListener("click", function() {
     if (currentQuestion > 0) navigateToQuestion(currentQuestion - 1);
 });
@@ -753,8 +726,7 @@ function saveTestSession(results) {
             startedAt: testStartedAt ? new Date(testStartedAt).toISOString() : null,
             completedAt: new Date().toISOString(),
             questionIds: quizQuestions.map(function(q) { return q.id; }),
-            userAnswers: [...userAnswers],
-            flaggedQuestions: [...flaggedQuestions]
+            userAnswers: [...userAnswers]
         });
         localStorage.setItem(TEST_HISTORY_KEY, JSON.stringify(history.slice(0, 100)));
     } catch (error) {
@@ -782,15 +754,12 @@ function showResultsSummary() {
 
 finishButton.addEventListener("click", function() {
     let unansweredCount = 0;
-    let flaggedCount = 0;
     for (let i = 0; i < quizQuestions.length; i++) {
         if (userAnswers[i] === undefined) unansweredCount++;
-        if (flaggedQuestions[i]) flaggedCount++;
     }
 
     let message = "";
     if (unansweredCount > 0) message += "You have " + unansweredCount + " unanswered question" + (unansweredCount > 1 ? "s" : "") + ". ";
-    if (flaggedCount > 0 && !isQuestionBankMode) message += "You have " + flaggedCount + " question" + (flaggedCount > 1 ? "s" : "") + " flagged for review. ";
     if (isQuestionBankMode) {
         if (!message) message = "Are you sure you want to end this session?";
         else message += "Are you sure you want to end this session?";
@@ -829,7 +798,6 @@ function finishTestNow() {
     if (timerDisplay) timerDisplay.style.display = "none";
     const bankProgressRow = document.getElementById("bankProgressRow");
     if (bankProgressRow) bankProgressRow.style.display = "none";
-    if (dashboardButton) dashboardButton.style.display = "inline-flex";
 
     if (!isQuestionBankMode && !isReviewMistakesMode) saveTestSession(stats);
     clearSavedProgress();
@@ -839,12 +807,6 @@ function finishTestNow() {
 }
 
 document.getElementById("confirmFinishButton").addEventListener("click", finishTestNow);
-
-if (dashboardButton) {
-    dashboardButton.addEventListener("click", function() {
-        window.location.href = "dashboard.html";
-    });
-}
 
 function buildReview() {
     reviewContainer.innerHTML = "";
@@ -947,6 +909,13 @@ reviewButton.addEventListener("click", function() {
     reviewContainer.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
+const backToDashboardButton = document.getElementById("backToDashboardButton");
+if (backToDashboardButton) {
+    backToDashboardButton.addEventListener("click", function() {
+        window.location.href = "dashboard.html";
+    });
+}
+
 function keyboardNavigation(event) {
     const tag = document.activeElement ? document.activeElement.tagName : "";
     if (["INPUT", "TEXTAREA", "SELECT"].includes(tag)) return;
@@ -1020,7 +989,6 @@ if (quizLayout) quizLayout.style.display = "none";
 if (resultsSummary) resultsSummary.style.display = "none";
 if (reviewButton) reviewButton.style.display = "none";
 if (reviewContainer) reviewContainer.style.display = "none";
-if (dashboardButton) dashboardButton.style.display = "none";
 if (timerDisplay) timerDisplay.style.display = "none";
 if (imagesButton) imagesButton.style.display = "none";
 
@@ -1063,7 +1031,6 @@ window.addEventListener("resize", function() {
     if (question) {
         document.getElementById("questionNumber").textContent = isAndroidMobileView() ? "Q" + (currentQuestion + 1) + ":" : "Question " + (currentQuestion + 1) + ":";
         if (bookmarkButton) setBookmarkButtonState(bookmarkButton.classList.contains("bookmarked"));
-        if (flagButton) setFlagButtonState(!!flaggedQuestions[currentQuestion]);
         if (isQuestionBankMode) updateExposureInfo();
     }
 });

@@ -142,6 +142,7 @@ function renderChapterPicker(chapters, withParts) {
             setChapterSelected(chapter, checked);
             updateLabel();
             update();
+            if (checked) closePanel();
         });
         const selected = chapterGrid.querySelector('input[data-chapter="' + CSS.escape(chapter) + '"]');
         if (selected?.checked) {
@@ -181,9 +182,21 @@ document.getElementById("startButton").addEventListener("click", () => {
     if (!isChapterBook(bookSelect.value)) return;
     const chosen = [...chapterGrid.querySelectorAll("input:checked")].map(input => input.value);
     if (!chosen.length) return;
-    document.getElementById("factList").innerHTML = chosen.map(chapter =>
-        '<article class="fact"><div class="factMeta">' + escapeHtml(bookSelect.value) + '</div><div class="factText">' + escapeHtml(chapter) + '</div></article>'
-    ).join("");
+    const chapterTitle = chosen[0];
+    const mcqs = typeof getChapterMCQSet === "function" ? getChapterMCQSet(bookSelect.value, chapterTitle) : null;
+    if (mcqs && mcqs.length) {
+        startChapterQuiz(bookSelect.value, chapterTitle, mcqs);
+        return;
+    }
+    document.getElementById("selectionPanel").style.display = "none";
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("quizView").style.display = "none";
+    document.getElementById("reviewView").style.display = "block";
+    document.getElementById("reviewHeading").textContent = bookSelect.value + " - revision";
+    document.getElementById("factList").innerHTML =
+        '<article class="fact"><div class="factMeta">' + escapeHtml(bookSelect.value) + '</div><div class="factText">' + escapeHtml(chapterTitle) + '</div><div style="margin-top:10px;color:var(--soft);font-size:13px">Questions for this chapter have not been added yet.</div></article>';
+    document.body.classList.add("reviewing-textbook");
+    if (typeof updateActiveNavigation === "function") updateActiveNavigation();
 });
 
 renderBradleyChapters();

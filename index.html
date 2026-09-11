@@ -11,12 +11,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header id="siteHeader">
-  <div id="headerRow">
-    <h1>StepUpNeuro</h1>
-    <div id="headerStats">
+<header class="site-header" id="siteHeader">
+  <div class="site-header__inner">
+    <div class="site-brand" aria-label="StepUpNeuro home"><img class="site-brand__logo" src="stepupneuro_logo.svg" alt="StepUpNeuro"></div>
+    <div class="site-header__actions" id="headerStats">
       <div id="profileArea" aria-label="Signed-in user">
-        <span id="profileName"></span>
+        <span id="profileName" class="site-header__profile-name"></span>
       </div>
       <span id="timerDisplay" aria-label="Elapsed time">00:00</span>
       <span id="score"></span>
@@ -34,7 +34,7 @@
   <div id="quizLayout">
     <section id="questionColumn">
       <h2 id="subject"></h2>
-      <div id="questionHeaderRow"><strong id="questionNumber"></strong><div id="questionExposureInfo" class="questionExposureInfo" aria-live="polite"></div><div id="questionActions"><button type="button" id="imagesButton" aria-haspopup="dialog">🖼&nbsp; Images</button><button type="button" id="bookmarkButton" aria-label="Bookmark question" title="Bookmark question"><svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M10 1.6l2.47 5.24 5.78.6-4.32 3.94 1.19 5.72L10 14.9l-5.12 3.2 1.19-5.72L1.75 7.44l5.78-.6z" fill="currentColor"/></svg>&nbsp; Bookmark</button><button type="button" id="flagButton"><svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M4 1.6v16.8M4 2.6h10.6l-1.9 3.4 1.9 3.4H4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"/></svg>&nbsp; Flag</button><button type="button" id="previousButton">←&nbsp; Previous</button><button type="button" id="nextButton">Next &nbsp;→</button></div></div>
+      <div id="questionHeaderRow"><strong id="questionNumber"></strong><div id="questionExposureInfo" class="questionExposureInfo" aria-live="polite"></div><div id="questionActions"><button type="button" id="imagesButton" aria-haspopup="dialog">🖼&nbsp; Images</button><button type="button" id="bookmarkButton" aria-label="Bookmark question" title="Bookmark question"><svg class="btnIcon" viewBox="0 0 20 20" width="13" height="13" aria-hidden="true"><path d="M10 1.6l2.47 5.24 5.78.6-4.32 3.94 1.19 5.72L10 14.9l-5.12 3.2 1.19-5.72L1.75 7.44l5.78-.6z" fill="currentColor"/></svg>&nbsp; Bookmark</button><button type="button" id="previousButton">←&nbsp; Previous</button><button type="button" id="nextButton">Next &nbsp;→</button></div></div>
       <p id="questionStem"><span id="question"></span></p>
       <div id="quizContainer">
         <div class="answerOption"><input type="radio" id="optionA" name="answer" value="A"><label for="optionA"><span class="optionTag">A</span><span class="optionText" id="labelAText"></span></label></div>
@@ -47,12 +47,31 @@
     </section>
   </div>
   <section id="resultsSummary" aria-live="polite">
-    <div class="resultsHeading">Test completed</div>
-    <div class="scoreCircle" id="scoreCircle"><span id="finalPercentage">0%</span></div>
+    <div class="resultsIntro">
+      <div class="resultsIcon" aria-hidden="true">
+        <span class="resultsSpark resultsSpark--tl"></span>
+        <span class="resultsSpark resultsSpark--tr"></span>
+        <span class="resultsSpark resultsSpark--bl"></span>
+        <span class="resultsSpark resultsSpark--br"></span>
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M7 3h10v2h3v2.2c0 2.6-2.02 4.75-4.6 4.98A5.01 5.01 0 0 1 13 14.9V17h3v2H8v-2h3v-2.1a5.01 5.01 0 0 1-2.4-2.72C6.02 11.95 4 9.8 4 7.2V5h3V3Zm0 4H6v.2C6 8.5 6.8 9.6 7.9 10a5.03 5.03 0 0 1-.9-2.86V7Zm10 0v.14c0 1.05-.3 2.03-.9 2.86 1.1-.4 1.9-1.5 1.9-2.8V7h-1Z" fill="currentColor"/></svg>
+      </div>
+      <div class="resultsHeading">Test completed</div>
+      <p class="resultsSubtitle">Great effort! Keep going on your learning journey.</p>
+    </div>
+    <div class="scoreCircle" id="scoreCircle"><span id="finalPercentage">0%</span><span class="scoreCircleLabel">Score</span></div>
     <div class="finalScoreLine" id="finalScoreLine">0 / 0</div>
-    <div class="resultsStats"><div class="resultStat correct"><strong id="correctCount">0</strong><span>Correct</span></div><div class="resultStat wrong"><strong id="incorrectCount">0</strong><span>Incorrect</span></div><div class="resultStat unanswered"><strong id="unansweredCount">0</strong><span>Unanswered</span></div></div>
+    <div class="resultsQuestionsLabel">Questions</div>
+    <div class="resultsStats">
+      <div class="resultStat correct"><span class="resultStatIcon" aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M4 10.5l3.8 3.8L16 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><strong id="correctCount">0</strong><span>Correct</span></div>
+      <div class="resultStat wrong"><span class="resultStatIcon" aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><strong id="incorrectCount">0</strong><span>Incorrect</span></div>
+      <div class="resultStat unanswered"><span class="resultStatIcon" aria-hidden="true"><svg viewBox="0 0 20 20" width="16" height="16"><path d="M5 3h7l3 3v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 9h6M7 12h6M7 15h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><strong id="unansweredCount">0</strong><span>Unanswered</span></div>
+    </div>
+    <blockquote class="resultsQuote"><p>“Consistency today, expertise tomorrow.”</p><cite>— StepUpNeuro</cite></blockquote>
     <div class="timeTaken" id="timeTaken">Time taken: 00:00</div>
-    <button type="button" id="reviewButton">Review answers</button>
+    <div class="resultsActions">
+      <button type="button" id="reviewButton"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M3 10a7 7 0 0 1 11.9-5M17 10a7 7 0 0 1-11.9 5M12 3.3V6h2.7M8 16.7V14H5.3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>&nbsp; Review Questions</button>
+      <button type="button" id="backToDashboardButton"><svg viewBox="0 0 20 20" width="15" height="15" aria-hidden="true"><path d="M3 9.5 10 3l7 6.5M5 8v8h10V8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>&nbsp; Back to Dashboard</button>
+    </div>
   </section>
   <div id="reviewContainer"></div>
 </main>
